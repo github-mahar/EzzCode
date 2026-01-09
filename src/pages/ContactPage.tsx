@@ -278,7 +278,7 @@ export default function ContactPage() {
 
                   <div>
                     <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
-                      Resume/CV <span className="text-gray-500 text-xs">(Optional - PDF, DOC, DOCX, Max 5MB)</span>
+                      Resume/CV <span className="text-gray-500 text-xs">(Optional - PDF only, Max 2MB)</span>
                     </label>
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
@@ -288,14 +288,14 @@ export default function ContactPage() {
                         >
                           <FileText className="h-5 w-5 text-gray-400" />
                           <span className="text-sm text-gray-600">
-                            {resumeFile ? resumeFile.name : 'Choose file or drag and drop'}
+                            {resumeFile ? resumeFile.name : 'Choose PDF file or drag and drop'}
                           </span>
                         </label>
                         <input
                           type="file"
                           id="resume"
                           name="resume"
-                          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          accept=".pdf,application/pdf"
                           onChange={handleFileChange}
                           className="hidden"
                         />
