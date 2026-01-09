@@ -31,4 +31,5 @@ export interface Contact {
   name: string;
   email: string;
   message: string;
+  resume_url?: string;
 }
