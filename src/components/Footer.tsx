@@ -21,14 +21,32 @@ export default function Footer({ navigate }: FooterProps) {
               Empowering future developers through practical learning, real-world projects, and industry mentorship.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-blue-500 transition-colors">
-                <Linkedin className="h-5 w-5" />
+              <a 
+                href="https://www.linkedin.com/company/ezzcode" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="Visit EZZCODE on LinkedIn"
+                className="hover:text-blue-500 transition-colors"
+              >
+                <Linkedin className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-blue-500 transition-colors">
-                <Twitter className="h-5 w-5" />
+              <a 
+                href="https://twitter.com/EzzCode" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="Visit EZZCODE on Twitter"
+                className="hover:text-blue-500 transition-colors"
+              >
+                <Twitter className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-blue-500 transition-colors">
-                <Github className="h-5 w-5" />
+              <a 
+                href="https://github.com/ezzcode" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="Visit EZZCODE on GitHub"
+                className="hover:text-blue-500 transition-colors"
+              >
+                <Github className="h-5 w-5" aria-hidden="true" />
               </a>
             </div>
           </div>

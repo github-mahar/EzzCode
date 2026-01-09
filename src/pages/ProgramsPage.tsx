@@ -129,13 +129,15 @@ export default function ProgramsPage({ navigate }: ProgramsPageProps) {
                         <div className="flex gap-4 pt-4">
                           <button
                             onClick={() => navigate('contact')}
+                            aria-label={`Apply to ${program.title}`}
                             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
                           >
                             Apply Now
-                            <ArrowRight className="h-4 w-4" />
+                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
                           </button>
                           <button
                             onClick={() => navigate('contact')}
+                            aria-label={`Learn more about ${program.title}`}
                             className="px-6 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors"
                           >
                             Learn More
@@ -161,10 +163,11 @@ export default function ProgramsPage({ navigate }: ProgramsPageProps) {
           </p>
           <button
             onClick={() => navigate('contact')}
+            aria-label="Get in touch with EZZCODE"
             className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
           >
             Get In Touch
-            <ArrowRight className="h-5 w-5" />
+            <ArrowRight className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
       </section>

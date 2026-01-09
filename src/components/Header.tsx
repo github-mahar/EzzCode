@@ -26,21 +26,28 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
     <header className="bg-white shadow-md sticky top-0 z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div
+          <a
+            href="#home"
             className="flex items-center space-x-2 cursor-pointer"
-            onClick={() => handleNavigate('home')}
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavigate('home');
+            }}
+            aria-label="EZZCODE Home"
           >
-            <Code2 className="h-8 w-8 text-blue-600" />
+            <Code2 className="h-8 w-8 text-blue-600" aria-hidden="true" />
             <span className="text-2xl font-bold text-gray-900">
               EZZ<span className="text-blue-600">CODE</span>
             </span>
-          </div>
+          </a>
 
           <div className="hidden md:flex space-x-8">
             {navItems.map(({ page, label }) => (
               <button
                 key={page}
                 onClick={() => handleNavigate(page)}
+                aria-label={`Navigate to ${label}`}
+                aria-current={currentPage === page ? 'page' : undefined}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   currentPage === page
                     ? 'text-blue-600 bg-blue-50'
@@ -54,6 +61,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
 
           <button
             onClick={() => handleNavigate('programs')}
+            aria-label="Apply to programs"
             className="hidden md:block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
             Apply Now
@@ -61,9 +69,11 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
             className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
           </button>
         </div>
       </nav>
@@ -75,6 +85,8 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
               <button
                 key={page}
                 onClick={() => handleNavigate(page)}
+                aria-label={`Navigate to ${label}`}
+                aria-current={currentPage === page ? 'page' : undefined}
                 className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${
                   currentPage === page
                     ? 'text-blue-600 bg-blue-50'
@@ -86,6 +98,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
             ))}
             <button
               onClick={() => handleNavigate('programs')}
+              aria-label="Apply to programs"
               className="w-full mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
               Apply Now

@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import HomePage from '../pages/HomePage';
-import ProgramsPage from '../pages/ProgramsPage';
-import CertificatePage from '../pages/CertificatePage';
-import ContactPage from '../pages/ContactPage';
-import PrivacyPage from '../pages/PrivacyPage';
-import TermsPage from '../pages/TermsPage';
+
+// Lazy load page components for code splitting
+const ProgramsPage = lazy(() => import('../pages/ProgramsPage'));
+const CertificatePage = lazy(() => import('../pages/CertificatePage'));
+const ContactPage = lazy(() => import('../pages/ContactPage'));
+const PrivacyPage = lazy(() => import('../pages/PrivacyPage'));
+const TermsPage = lazy(() => import('../pages/TermsPage'));
 
 export type Page = 'home' | 'programs' | 'certificate' | 'contact' | 'privacy' | 'terms';
 
@@ -34,19 +36,45 @@ export default function Router() {
   };
 
   const renderPage = () => {
+    const LoadingFallback = () => (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+
     switch (currentPage) {
       case 'home':
         return <HomePage navigate={navigate} />;
       case 'programs':
-        return <ProgramsPage navigate={navigate} />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <ProgramsPage navigate={navigate} />
+          </Suspense>
+        );
       case 'certificate':
-        return <CertificatePage />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <CertificatePage />
+          </Suspense>
+        );
       case 'contact':
-        return <ContactPage />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <ContactPage />
+          </Suspense>
+        );
       case 'privacy':
-        return <PrivacyPage />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <PrivacyPage />
+          </Suspense>
+        );
       case 'terms':
-        return <TermsPage />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <TermsPage />
+          </Suspense>
+        );
       default:
         return <HomePage navigate={navigate} />;
     }

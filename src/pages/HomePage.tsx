@@ -78,13 +78,15 @@ export default function HomePage({ navigate }: HomePageProps) {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button
                 onClick={() => navigate('programs')}
+                aria-label="Apply to EZZCODE programs"
                 className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-all hover:scale-105 flex items-center gap-2 shadow-lg"
               >
                 Apply Now
-                <ArrowRight className="h-5 w-5" />
+                <ArrowRight className="h-5 w-5" aria-hidden="true" />
               </button>
               <button
                 onClick={() => navigate('programs')}
+                aria-label="Explore available programs"
                 className="px-8 py-4 bg-white hover:bg-gray-100 text-blue-900 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
               >
                 Explore Programs
@@ -158,10 +160,11 @@ export default function HomePage({ navigate }: HomePageProps) {
                     </div>
                     <button
                       onClick={() => navigate('programs')}
+                      aria-label={`Learn more about ${program.title}`}
                       className="w-full mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                     >
                       Learn More
-                      <ArrowRight className="h-4 w-4" />
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -234,9 +237,10 @@ export default function HomePage({ navigate }: HomePageProps) {
             <div className="text-center mt-8">
               <button
                 onClick={() => navigate('certificate')}
+                aria-label="Verify a certificate"
                 className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
               >
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-5 w-5" aria-hidden="true" />
                 Verify a Certificate
               </button>
             </div>
@@ -255,13 +259,15 @@ export default function HomePage({ navigate }: HomePageProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate('programs')}
+              aria-label="Browse available programs"
               className="px-8 py-4 bg-white hover:bg-gray-100 text-blue-900 rounded-lg font-semibold text-lg transition-all hover:scale-105 inline-flex items-center justify-center gap-2"
             >
               Browse Programs
-              <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </button>
             <button
               onClick={() => navigate('contact')}
+              aria-label="Contact EZZCODE"
               className="px-8 py-4 border-2 border-white hover:bg-white hover:text-blue-900 text-white rounded-lg font-semibold text-lg transition-all"
             >
               Contact Us
