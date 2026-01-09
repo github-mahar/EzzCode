@@ -7,4 +7,17 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'supabase-vendor': ['@supabase/supabase-js'],
+        },
+      },
+    },
+    minify: 'esbuild', // Faster than terser, built into Vite
+    chunkSizeWarningLimit: 1000,
+    sourcemap: false, // Disable sourcemaps in production for smaller builds
+  },
 });
