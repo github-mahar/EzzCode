@@ -2,7 +2,7 @@
 
 <div align="center">
 
-
+<img src="src/logo_white.jpg" alt="EZZCODE Logo" width="200" />
 
 **Empowering Future Developers Through Practical Learning**
 
