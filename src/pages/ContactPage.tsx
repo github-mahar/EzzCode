@@ -80,27 +80,64 @@ export default function ContactPage() {
 
       // Upload resume file if provided
       if (resumeFile) {
-        const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${Date.now()}_${formData.name.replace(/\s+/g, '_')}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        // Sanitize full name - remove special characters, keep spaces or convert to underscores
+        const sanitizedName = formData.name
+          .trim()
+          .replace(/[^a-zA-Z0-9\s\-_]/g, '') // Remove special chars except spaces, hyphens, underscores
+          .replace(/\s+/g, '_') // Replace spaces with underscores
+          .replace(/_+/g, '_') // Replace multiple underscores with single
+          .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
+        
+        // Add timestamp to avoid duplicates if same person uploads multiple times
+        const timestamp = Date.now();
+        
+        // Use full name as filename: "FullName_timestamp.pdf"
+        const fileName = `${sanitizedName}_${timestamp}.pdf`;
         const filePath = `resumes/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
+        console.log('Uploading file:', { fileName, filePath, size: resumeFile.size });
+
+        // Upload file to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
           .from('contacts')
           .upload(filePath, resumeFile, {
             cacheControl: '3600',
-            upsert: false
+            upsert: false,
+            contentType: 'application/pdf'
           });
 
         if (uploadError) {
-          throw new Error(`Failed to upload resume: ${uploadError.message}`);
+          console.error('Upload error details:', uploadError);
+          
+          // Provide more specific error messages
+          if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('The resource was not found')) {
+            throw new Error('Storage bucket not configured. Please create a "contacts" bucket in Supabase Storage.');
+          } else if (uploadError.message.includes('new row violates row-level security policy')) {
+            throw new Error('Storage access denied. Please configure storage policies to allow public uploads.');
+          } else if (uploadError.message.includes('duplicate')) {
+            throw new Error('A file with this name already exists. Please try again.');
+          } else {
+            throw new Error(`Failed to upload resume: ${uploadError.message}`);
+          }
         }
 
+        if (!uploadData) {
+          throw new Error('Upload failed: No data returned from storage');
+        }
+
+        console.log('Upload successful:', uploadData);
+
         // Get public URL
-        const { data: { publicUrl } } = supabase.storage
+        const { data: urlData } = supabase.storage
           .from('contacts')
           .getPublicUrl(filePath);
 
-        resumeUrl = publicUrl;
+        if (!urlData?.publicUrl) {
+          throw new Error('Failed to get public URL for uploaded file');
+        }
+
+        resumeUrl = urlData.publicUrl;
+        console.log('Resume URL:', resumeUrl);
       }
 
       // Insert contact data with resume URL
@@ -278,7 +315,7 @@ export default function ContactPage() {
 
                   <div>
                     <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
-                      Resume/CV <span className="text-gray-500 text-xs">(Optional - PDF only, Max 2MB)</span>
+                      Resume/CV <span className="text-gray-500 text-xs">(PDF only, Max 2MB)</span>
                     </label>
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
