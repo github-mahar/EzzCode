@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle, FileText, X } from 'lucide-react';
 import { supabase, Contact } from '../lib/supabase';
 
 export default function ContactPage() {
@@ -7,7 +7,9 @@ export default function ContactPage() {
     name: '',
     email: '',
     message: '',
+    resume_url: undefined,
   });
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -20,6 +22,36 @@ export default function ContactPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (error) setError('');
+    
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type (PDF only)
+      if (file.type !== 'application/pdf') {
+        setError('Please upload a PDF file only');
+        e.target.value = '';
+        return;
+      }
+      
+      // Validate file size (max 2MB)
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSize) {
+        setError('File size must be less than 2MB');
+        e.target.value = '';
+        return;
+      }
+      
+      setResumeFile(file);
+    }
+  };
+
+  const removeFile = () => {
+    setResumeFile(null);
+    const fileInput = document.getElementById('resume') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,19 +76,57 @@ export default function ContactPage() {
     }
 
     try {
-      const { error } = await supabase.from('contacts').insert([formData]);
+      let resumeUrl: string | undefined = undefined;
+
+      // Upload resume file if provided
+      if (resumeFile) {
+        const fileExt = resumeFile.name.split('.').pop();
+        const fileName = `${Date.now()}_${formData.name.replace(/\s+/g, '_')}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `resumes/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('contacts')
+          .upload(filePath, resumeFile, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (uploadError) {
+          throw new Error(`Failed to upload resume: ${uploadError.message}`);
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('contacts')
+          .getPublicUrl(filePath);
+
+        resumeUrl = publicUrl;
+      }
+
+      // Insert contact data with resume URL
+      const contactData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+        resume_url: resumeUrl || null,
+      };
+
+      const { error } = await supabase.from('contacts').insert([contactData]);
 
       if (error) throw error;
 
       setSuccess(true);
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', message: '', resume_url: undefined });
+      setResumeFile(null);
+      const fileInput = document.getElementById('resume') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
 
       setTimeout(() => {
         setSuccess(false);
       }, 5000);
     } catch (err) {
       console.error('Error submitting form:', err);
-      setError('Failed to submit your message. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to submit your message. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -204,6 +274,49 @@ export default function ContactPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                       placeholder="Tell us about your interest in our programs..."
                     ></textarea>
+                  </div>
+
+                  <div>
+                    <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
+                      Resume/CV <span className="text-gray-500 text-xs">(Optional - PDF, DOC, DOCX, Max 5MB)</span>
+                    </label>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <label
+                          htmlFor="resume"
+                          className="flex-1 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <FileText className="h-5 w-5 text-gray-400" />
+                          <span className="text-sm text-gray-600">
+                            {resumeFile ? resumeFile.name : 'Choose file or drag and drop'}
+                          </span>
+                        </label>
+                        <input
+                          type="file"
+                          id="resume"
+                          name="resume"
+                          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                        {resumeFile && (
+                          <button
+                            type="button"
+                            onClick={removeFile}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            aria-label="Remove file"
+                          >
+                            <X className="h-5 w-5" />
+                          </button>
+                        )}
+                      </div>
+                      {resumeFile && (
+                        <div className="text-xs text-gray-500 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          <span>{(resumeFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <button
