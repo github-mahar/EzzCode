@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, Contact } from '../lib/supabase';
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Contact>({
     name: '',
     email: '',
     message: '',
@@ -13,6 +13,9 @@ export default function ContactPage() {
   const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // Clear error when user starts typing
+    if (error) setError('');
+    
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -25,8 +28,17 @@ export default function ContactPage() {
     setError('');
     setSuccess(false);
 
-    if (!formData.name || !formData.email || !formData.message) {
+    // Validate all fields are filled
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
       setError('Please fill in all fields');
+      setLoading(false);
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
       setLoading(false);
       return;
     }
