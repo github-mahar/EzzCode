@@ -25,7 +25,7 @@ export default function Footer({ navigate }: FooterProps) {
                 href="https://www.linkedin.com/company/ezzcode" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                aria-label="Visit EZZCODE on LinkedIn"
+                aria-label="Visit EzzCode on LinkedIn"
                 className="hover:text-blue-500 transition-colors"
               >
                 <Linkedin className="h-5 w-5" aria-hidden="true" />
@@ -34,7 +34,7 @@ export default function Footer({ navigate }: FooterProps) {
                 href="https://twitter.com/EzzCode" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                aria-label="Visit EZZCODE on Twitter"
+                aria-label="Visit EzzCode on Twitter"
                 className="hover:text-blue-500 transition-colors"
               >
                 <Twitter className="h-5 w-5" aria-hidden="true" />
@@ -43,7 +43,7 @@ export default function Footer({ navigate }: FooterProps) {
                 href="https://github.com/ezzcode" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                aria-label="Visit EZZCODE on GitHub"
+                aria-label="Visit EzzCode on GitHub"
                 className="hover:text-blue-500 transition-colors"
               >
                 <Github className="h-5 w-5" aria-hidden="true" />
@@ -113,7 +113,7 @@ export default function Footer({ navigate }: FooterProps) {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} EZZCODE. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} EzzCode. All rights reserved.</p>
         </div>
       </div>
     </footer>
