@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Award, Search, CheckCircle, XCircle, Calendar, User, FileText } from 'lucide-react';
 import { supabase, Certificate } from '../lib/supabase';
+import AdBanner from '../components/AdBanner';
 
 export default function CertificatePage() {
   const [certificateId, setCertificateId] = useState('');
@@ -66,8 +67,11 @@ export default function CertificatePage() {
       </section>
 
       <section className="py-16 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              <div className="bg-white rounded-xl shadow-lg p-8">
             <form onSubmit={handleVerify} className="space-y-6">
               <div>
                 <label htmlFor="certificateId" className="block text-sm font-medium text-gray-700 mb-2">
@@ -179,17 +183,25 @@ export default function CertificatePage() {
                 </div>
               </div>
             )}
-          </div>
+              </div>
 
-          <div className="mt-8 bg-blue-50 rounded-lg p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Sample Certificate IDs</h3>
-            <p className="text-gray-700 mb-3">Try verifying one of these sample certificates:</p>
-            <ul className="space-y-2">
-              <li className="font-mono text-sm text-blue-700">EZZCODE-2024-WD-001</li>
-              <li className="font-mono text-sm text-blue-700">EZZCODE-2024-PY-002</li>
-              <li className="font-mono text-sm text-blue-700">EZZCODE-2024-AI-003</li>
-              <li className="font-mono text-sm text-blue-700">EZZCODE-2024-FS-004</li>
-            </ul>
+              <div className="mt-8 bg-blue-50 rounded-lg p-6">
+                <h3 className="font-semibold text-gray-900 mb-4">Sample Certificate IDs</h3>
+                <p className="text-gray-700 mb-3">Try verifying one of these sample certificates:</p>
+                <ul className="space-y-2">
+                  <li className="font-mono text-sm text-blue-700">EZZCODE-2024-WD-001</li>
+                  <li className="font-mono text-sm text-blue-700">EZZCODE-2024-PY-002</li>
+                  <li className="font-mono text-sm text-blue-700">EZZCODE-2024-AI-003</li>
+                  <li className="font-mono text-sm text-blue-700">EZZCODE-2024-FS-004</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Right Sidebar with Ads */}
+            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
+              <AdBanner size="sidebar" position="sidebar" />
+              <AdBanner size="medium" position="sidebar" className="mt-6" />
+            </aside>
           </div>
         </div>
       </section>
