@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ArrowRight, Code, Users, Briefcase, Award, CheckCircle, BookOpen } from 'lucide-react';
 import { supabase, Program } from '../lib/supabase';
 import { Page } from '../components/Router';
+import AdBanner from '../components/AdBanner';
 
 interface HomePageProps {
   navigate: (page: Page) => void;
@@ -73,12 +74,12 @@ export default function HomePage({ navigate }: HomePageProps) {
               <span className="text-blue-300">Through Practical Learning</span>
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-              Join EZZCODE's comprehensive tech training and internship programs. Gain real-world experience, build production-ready projects, and launch your career in technology.
+              Join EzzCode's comprehensive tech training and internship programs. Gain real-world experience, build production-ready projects, and launch your career in technology.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button
                 onClick={() => navigate('programs')}
-                aria-label="Apply to EZZCODE programs"
+                aria-label="Apply to EzzCode programs"
                 className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-all hover:scale-105 flex items-center gap-2 shadow-lg"
               >
                 Apply Now
@@ -116,17 +117,20 @@ export default function HomePage({ navigate }: HomePageProps) {
 
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Programs</h2>
-            <p className="text-xl text-gray-600">Choose from our industry-leading training programs</p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Programs</h2>
+                <p className="text-xl text-gray-600">Choose from our industry-leading training programs</p>
+              </div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
               {programs.map((program) => (
                 <div
                   key={program.id}
@@ -170,27 +174,39 @@ export default function HomePage({ navigate }: HomePageProps) {
                 </div>
               ))}
             </div>
-          )}
+              )}
 
-          <div className="text-center mt-12">
-            <button
-              onClick={() => navigate('programs')}
-              className="px-8 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg font-semibold transition-all"
-            >
-              View All Programs
-            </button>
+              <div className="text-center mt-12">
+                <button
+                  onClick={() => navigate('programs')}
+                  aria-label="View all available programs"
+                  className="px-8 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg font-semibold transition-all"
+                >
+                  View All Programs
+                </button>
+              </div>
+            </div>
+
+            {/* Right Sidebar with Ads */}
+            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
+              <AdBanner size="sidebar" position="sidebar" />
+              <AdBanner size="medium" position="sidebar" className="mt-6" />
+            </aside>
           </div>
         </div>
       </section>
 
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose EZZCODE?</h2>
-            <p className="text-xl text-gray-600">We provide everything you need to succeed in tech</p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose EzzCode?</h2>
+                <p className="text-xl text-gray-600">We provide everything you need to succeed in tech</p>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, idx) => {
               const Icon = feature.icon;
               return (
@@ -206,6 +222,13 @@ export default function HomePage({ navigate }: HomePageProps) {
                 </div>
               );
             })}
+              </div>
+            </div>
+
+            {/* Right Sidebar with Ads */}
+            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
+              <AdBanner size="sidebar" position="sidebar" />
+            </aside>
           </div>
         </div>
       </section>
@@ -254,7 +277,7 @@ export default function HomePage({ navigate }: HomePageProps) {
             Ready to Start Your Tech Career?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join hundreds of students who have already transformed their careers with EZZCODE. Get hands-on experience, industry mentorship, and verifiable certificates.
+            Join hundreds of students who have already transformed their careers with EzzCode. Get hands-on experience, industry mentorship, and verifiable certificates.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -267,7 +290,7 @@ export default function HomePage({ navigate }: HomePageProps) {
             </button>
             <button
               onClick={() => navigate('contact')}
-              aria-label="Contact EZZCODE"
+              aria-label="Contact EzzCode"
               className="px-8 py-4 border-2 border-white hover:bg-white hover:text-blue-900 text-white rounded-lg font-semibold text-lg transition-all"
             >
               Contact Us
