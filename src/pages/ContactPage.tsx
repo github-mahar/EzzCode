@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle, FileText, X } from 'lucide-react';
 import { supabase, Contact } from '../lib/supabase';
+import AdBanner from '../components/AdBanner';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState<Contact>({
@@ -184,7 +185,8 @@ export default function ContactPage() {
 
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Left Sidebar with Contact Info */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-white rounded-xl shadow-md p-6">
                 <div className="flex items-start space-x-4">
@@ -242,6 +244,7 @@ export default function ContactPage() {
               </div>
             </div>
 
+            {/* Main Content - Contact Form */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-xl shadow-lg p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
@@ -376,6 +379,12 @@ export default function ContactPage() {
                 </form>
               </div>
             </div>
+
+            {/* Right Sidebar with Ads */}
+            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
+              <AdBanner size="sidebar" position="sidebar" />
+              <AdBanner size="medium" position="sidebar" className="mt-6" />
+            </aside>
           </div>
         </div>
       </section>
