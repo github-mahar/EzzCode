@@ -1,4 +1,4 @@
-# EZZCODE - Tech Training & Internship Platform
+# EzzCode - Tech Training & Internship Platform
 
 <div align="center">
 
@@ -35,7 +35,7 @@
 
 ## 🎯 Overview
 
-EZZCODE is a comprehensive tech training and internship platform designed to transform beginners into job-ready developers. The platform offers industry-leading training programs, verifiable certificates, and real-world project experience with mentorship from experienced professionals.
+EzzCode is a comprehensive tech training and internship platform designed to transform beginners into job-ready developers. The platform offers industry-leading training programs, verifiable certificates, and real-world project experience with mentorship from experienced professionals.
 
 ### Key Highlights
 
@@ -367,7 +367,7 @@ For support, email info@ezzcode.com or visit our [contact page](https://www.ezzc
 
 <div align="center">
 
-**Built with ❤️ by the EZZCODE Team**
+**Built with ❤️ by the EzzCode Team**
 
 [Website](https://www.ezzcode.online) • [Contact](https://www.ezzcode.online/#contact)
 
