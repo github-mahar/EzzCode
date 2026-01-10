@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BookOpen, Clock, CheckCircle, ArrowRight } from 'lucide-react';
 import { supabase, Program } from '../lib/supabase';
 import { Page } from '../components/Router';
+import AdBanner from '../components/AdBanner';
 
 interface ProgramsPageProps {
   navigate: (page: Page) => void;
@@ -54,7 +55,10 @@ export default function ProgramsPage({ navigate }: ProgramsPageProps) {
 
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-3 justify-center mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              <div className="flex flex-wrap gap-3 justify-center mb-12">
             {categories.map((category) => (
               <button
                 key={category}
@@ -150,25 +154,45 @@ export default function ProgramsPage({ navigate }: ProgramsPageProps) {
               ))}
             </div>
           )}
+            </div>
+
+            {/* Sidebar with Ads */}
+            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
+              <AdBanner size="sidebar" position="sidebar" />
+              <AdBanner size="medium" position="sidebar" className="mt-6" />
+            </aside>
+          </div>
         </div>
       </section>
 
       <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Not Sure Which Program to Choose?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Our team is here to help you find the perfect program based on your goals and background.
-          </p>
-          <button
-            onClick={() => navigate('contact')}
-            aria-label="Get in touch with EZZCODE"
-            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
-          >
-            Get In Touch
-            <ArrowRight className="h-5 w-5" aria-hidden="true" />
-          </button>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  Not Sure Which Program to Choose?
+                </h2>
+                <p className="text-xl text-gray-600 mb-8">
+                  Our team is here to help you find the perfect program based on your goals and background.
+                </p>
+                <button
+                  onClick={() => navigate('contact')}
+                  aria-label="Get in touch with EzzCode"
+                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
+                >
+                  Get In Touch
+                  <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+
+            {/* Right Sidebar with Ads */}
+            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
+              <AdBanner size="sidebar" position="sidebar" />
+            </aside>
+          </div>
         </div>
       </section>
     </div>
