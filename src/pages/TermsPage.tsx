@@ -19,14 +19,14 @@ export default function TermsPage() {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Agreement to Terms</h2>
               <p className="text-gray-700 leading-relaxed">
-                By accessing or using EZZCODE's services, you agree to be bound by these Terms and Conditions. If you disagree with any part of these terms, you may not access our services.
+                By accessing or using EzzCode's services, you agree to be bound by these Terms and Conditions. If you disagree with any part of these terms, you may not access our services.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Program Enrollment</h2>
               <p className="text-gray-700 leading-relaxed mb-3">
-                When you enroll in any EZZCODE program:
+                When you enroll in any EzzCode program:
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                 <li>You must provide accurate and complete information during registration</li>
@@ -54,7 +54,7 @@ export default function TermsPage() {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Intellectual Property</h2>
               <p className="text-gray-700 leading-relaxed">
-                All course materials, content, and resources provided by EZZCODE are protected by copyright and other intellectual property laws. Students may use these materials solely for personal learning purposes and may not reproduce, distribute, or create derivative works without written permission.
+                All course materials, content, and resources provided by EzzCode are protected by copyright and other intellectual property laws. Students may use these materials solely for personal learning purposes and may not reproduce, distribute, or create derivative works without written permission.
               </p>
             </div>
 
@@ -75,35 +75,35 @@ export default function TermsPage() {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Certificates</h2>
               <p className="text-gray-700 leading-relaxed">
-                Certificates of completion are issued to students who successfully meet all program requirements. Certificates include unique verification IDs and may be verified through our website. EZZCODE reserves the right to revoke certificates if fraud or misconduct is discovered.
+                Certificates of completion are issued to students who successfully meet all program requirements. Certificates include unique verification IDs and may be verified through our website. EzzCode reserves the right to revoke certificates if fraud or misconduct is discovered.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Program Changes</h2>
               <p className="text-gray-700 leading-relaxed">
-                EZZCODE reserves the right to modify, suspend, or discontinue any program at any time. We will make reasonable efforts to notify enrolled students of significant changes. In the event of program cancellation, enrolled students will receive a full refund.
+                EzzCode reserves the right to modify, suspend, or discontinue any program at any time. We will make reasonable efforts to notify enrolled students of significant changes. In the event of program cancellation, enrolled students will receive a full refund.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Limitation of Liability</h2>
               <p className="text-gray-700 leading-relaxed">
-                EZZCODE provides training and education services but does not guarantee employment or specific career outcomes. While we strive for excellence in our programs, we are not liable for any indirect, incidental, or consequential damages arising from your use of our services.
+                EzzCode provides training and education services but does not guarantee employment or specific career outcomes. While we strive for excellence in our programs, we are not liable for any indirect, incidental, or consequential damages arising from your use of our services.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Privacy</h2>
               <p className="text-gray-700 leading-relaxed">
-                Your use of EZZCODE's services is also governed by our Privacy Policy. Please review our Privacy Policy to understand how we collect, use, and protect your personal information.
+                Your use of EzzCode's services is also governed by our Privacy Policy. Please review our Privacy Policy to understand how we collect, use, and protect your personal information.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">10. Termination</h2>
               <p className="text-gray-700 leading-relaxed">
-                EZZCODE reserves the right to terminate or suspend access to our services immediately, without prior notice, for conduct that violates these Terms or is harmful to other users, us, or third parties, or for any other reason at our sole discretion.
+                EzzCode reserves the right to terminate or suspend access to our services immediately, without prior notice, for conduct that violates these Terms or is harmful to other users, us, or third parties, or for any other reason at our sole discretion.
               </p>
             </div>
 
