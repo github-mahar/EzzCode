@@ -33,7 +33,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
               e.preventDefault();
               handleNavigate('home');
             }}
-            aria-label="EZZCODE Home"
+            aria-label="EzzCode Home"
           >
             <Code2 className="h-8 w-8 text-blue-600" aria-hidden="true" />
             <span className="text-2xl font-bold text-gray-900">
