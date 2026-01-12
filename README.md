@@ -278,6 +278,7 @@ The build output will be in the `dist/` directory, ready for deployment.
 1. Push your code to GitHub
 2. Import project in Vercel
 3. Add environment variables
+
 4. Deploy
 
 ### Netlify
