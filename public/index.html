@@ -12,7 +12,12 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-XT4KKGQQJ2');
+      gtag('config', 'G-XT4KKGQQJ2', { debug_mode: true });
+
+      gtag('event', 'TraeAI_test', {
+        source: 'index.html',
+        page_location: window.location.href
+      });
     </script>
 
     <!-- ... existing code ... -->
