@@ -3,23 +3,26 @@ import { useEffect, useRef } from 'react';
 interface AdBannerProps {
   className?: string;
   size?: 'small' | 'medium' | 'large' | 'sidebar';
-  position?: 'top' | 'bottom' | 'inline' | 'sidebar';
   adSlot?: string; // Optional AdSense ad slot ID
+  placeholderText?: string;
+  placeholderDetails?: string;
 }
 
 export default function AdBanner({ 
   className = '', 
   size = 'medium',
-  position = 'inline',
-  adSlot
+  adSlot,
+  placeholderText,
+  placeholderDetails
 }: AdBannerProps) {
-  const adRef = useRef<HTMLDivElement>(null);
+  const adRef = useRef<HTMLModElement>(null);
   const adPushed = useRef(false);
 
   useEffect(() => {
     if (adSlot && adRef.current && !adPushed.current) {
       try {
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        window.adsbygoogle = window.adsbygoogle || [];
+        window.adsbygoogle.push({} as unknown);
         adPushed.current = true;
       } catch (err) {
         console.error('Error loading AdSense ad:', err);
@@ -60,9 +63,9 @@ export default function AdBanner({
       aria-label="Advertisement"
     >
       <div className="text-center text-gray-400 text-sm">
-        <p className="font-medium mb-1">Advertisement</p>
+        <p className="font-medium mb-1">{placeholderText ?? 'Advertisement'}</p>
         <p className="text-xs">
-          {size === 'sidebar' ? '300x600' : size === 'large' ? '728x90' : size === 'medium' ? '300x250' : '300x100'}
+          {placeholderDetails ?? (size === 'sidebar' ? '300x600' : size === 'large' ? '728x90' : size === 'medium' ? '300x250' : '300x100')}
         </p>
         <div className="mt-2 text-xs text-gray-300">
           Ad Space

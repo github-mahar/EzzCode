@@ -189,8 +189,8 @@ export default function HomePage({ navigate }: HomePageProps) {
 
             {/* Right Sidebar with Ads */}
             <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
-              <AdBanner size="sidebar" position="sidebar" />
-              <AdBanner size="medium" position="sidebar" className="mt-6" />
+              <AdBanner size="sidebar" adSlot="SIDEBAR_SLOT_ID" placeholderText="Advertisement" placeholderDetails="300x600" />
+              <AdBanner size="medium" adSlot="MEDIUM_SLOT_ID" placeholderText="Advertisement" placeholderDetails="300x250" className="mt-6" />
             </aside>
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function HomePage({ navigate }: HomePageProps) {
 
             {/* Right Sidebar with Ads */}
             <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
-              <AdBanner size="sidebar" position="sidebar" />
+              <AdBanner size="sidebar" adSlot="SIDEBAR_SLOT_ID" placeholderText="Advertisement" placeholderDetails="300x600" />
             </aside>
           </div>
         </div>
