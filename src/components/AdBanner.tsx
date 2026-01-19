@@ -19,14 +19,16 @@ export default function AdBanner({
   const adPushed = useRef(false);
 
   useEffect(() => {
-    if (adSlot && adRef.current && !adPushed.current) {
-      try {
-        window.adsbygoogle = window.adsbygoogle || [];
-        window.adsbygoogle.push({} as unknown);
-        adPushed.current = true;
-      } catch (err) {
-        console.error('Error loading AdSense ad:', err);
-      }
+    const el = adRef.current;
+    if (!adSlot || !el || adPushed.current) return;
+    const status = el.getAttribute('data-adsbygoogle-status');
+    if (status === 'done') return;
+    try {
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({} as unknown);
+      adPushed.current = true;
+    } catch (err) {
+      console.error('Error loading AdSense ad:', err);
     }
   }, [adSlot]);
 
