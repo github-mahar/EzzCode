@@ -6,6 +6,8 @@ interface AdBannerProps {
   adSlot?: string; // Optional AdSense ad slot ID
   placeholderText?: string;
   placeholderDetails?: string;
+  adFormat?: 'auto' | 'vertical' | 'horizontal' | 'rectangle';
+  fullWidthResponsive?: boolean;
 }
 
 export default function AdBanner({ 
@@ -13,7 +15,9 @@ export default function AdBanner({
   size = 'medium',
   adSlot,
   placeholderText,
-  placeholderDetails
+  placeholderDetails,
+  adFormat,
+  fullWidthResponsive,
 }: AdBannerProps) {
   const adRef = useRef<HTMLModElement>(null);
   const adPushed = useRef(false);
@@ -51,7 +55,8 @@ export default function AdBanner({
           style={{ display: 'block' }}
           data-ad-client="ca-pub-2842777009443084"
           data-ad-slot={adSlot}
-          data-ad-format={size === 'sidebar' ? 'vertical' : size === 'large' ? 'horizontal' : 'rectangle'}
+          data-ad-format={adFormat ?? (size === 'sidebar' ? 'vertical' : size === 'large' ? 'horizontal' : 'rectangle')}
+          {...(fullWidthResponsive ? { 'data-full-width-responsive': 'true' } : {})}
           ref={adRef}
         ></ins>
       </aside>

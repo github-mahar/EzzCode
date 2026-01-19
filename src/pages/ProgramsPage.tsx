@@ -158,8 +158,8 @@ export default function ProgramsPage({ navigate }: ProgramsPageProps) {
 
             {/* Sidebar with Ads */}
             <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
-              <AdBanner size="sidebar" adSlot="SIDEBAR_SLOT_ID" placeholderText="Advertisement" placeholderDetails="300x600" />
-              <AdBanner size="medium" adSlot="MEDIUM_SLOT_ID" placeholderText="Advertisement" placeholderDetails="300x250" className="mt-6" />
+              <AdBanner size="sidebar" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x600" />
+              <AdBanner size="medium" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x250" className="mt-6" />
             </aside>
           </div>
         </div>
@@ -190,7 +190,7 @@ export default function ProgramsPage({ navigate }: ProgramsPageProps) {
 
             {/* Right Sidebar with Ads */}
             <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
-              <AdBanner size="sidebar" adSlot="SIDEBAR_SLOT_ID" placeholderText="Advertisement" placeholderDetails="300x600" />
+              <AdBanner size="sidebar" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x600" />
             </aside>
           </div>
         </div>
