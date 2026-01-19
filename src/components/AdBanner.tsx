@@ -27,6 +27,8 @@ export default function AdBanner({
     if (!adSlot || !el || adPushed.current) return;
     const status = el.getAttribute('data-adsbygoogle-status');
     if (status === 'done') return;
+    const hasIframe = !!el.querySelector('iframe');
+    if (hasIframe) return;
     try {
       window.adsbygoogle = window.adsbygoogle || [];
       window.adsbygoogle.push({} as unknown);
