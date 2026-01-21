@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle, FileText, X } from 'lucide-react';
+import { Mail, Send, CheckCircle, FileText, X } from 'lucide-react';
 import { supabase, Contact } from '../lib/supabase';
 import AdBanner from '../components/AdBanner';
 
@@ -203,38 +203,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Phone className="h-6 w-6 text-blue-600" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Call Us</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-600">Mon-Fri, 9AM-6PM EST</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <MapPin className="h-6 w-6 text-blue-600" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Visit Us</h3>
-                    <p className="text-gray-600">
-                      123 Tech Street<br />
-                      Innovation City, TC 12345<br />
-                      United States
-                    </p>
-                  </div>
-                </div>
-              </div>
+              
 
               <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-md p-6 text-white">
                 <h3 className="font-semibold mb-3">Quick Response</h3>
