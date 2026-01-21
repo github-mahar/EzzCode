@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Twitter, Github, Code2 } from 'lucide-react';
+import { Mail, Linkedin, Twitter, Github, Code2 } from 'lucide-react';
 import { Page } from './Router';
 
 interface FooterProps {
@@ -99,14 +99,6 @@ export default function Footer({ navigate }: FooterProps) {
               <li className="flex items-start space-x-2">
                 <Mail className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span>info@ezzcode.com</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <Phone className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>123 Tech Street, Innovation City, TC 12345</span>
               </li>
             </ul>
           </div>

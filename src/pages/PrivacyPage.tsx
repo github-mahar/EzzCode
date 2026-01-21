@@ -17,96 +17,71 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="prose prose-lg max-w-none space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                Welcome to EzzCode. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
+                Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information when you visit or use our website and services.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Information We Collect</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Information We Collect</h2>
               <p className="text-gray-700 leading-relaxed mb-3">
-                We may collect, use, store and transfer different kinds of personal data about you:
+                We may collect basic information such as your name, email address, phone number, and project details when you contact us through forms, email, or other communication methods. We may also collect non-personal data like browser type, device information, and website usage statistics to improve our services.
               </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">How We Use Your Information</h2>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>Identity Data: first name, last name, username</li>
-                <li>Contact Data: email address, telephone numbers, physical address</li>
-                <li>Technical Data: IP address, browser type and version, time zone setting</li>
-                <li>Usage Data: information about how you use our website and services</li>
-                <li>Marketing and Communications Data: your preferences in receiving marketing from us</li>
+                <li>Respond to your inquiries and provide services</li>
+                <li>Understand your requirements and improve our solutions</li>
+                <li>Communicate updates, proposals, or important information</li>
+                <li>Maintain website security and performance</li>
               </ul>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">3. How We Use Your Information</h2>
-              <p className="text-gray-700 leading-relaxed mb-3">
-                We use your personal data for the following purposes:
+              <p className="text-gray-700 leading-relaxed mt-3">
+                We do not sell, rent, or trade your personal information to third parties.
               </p>
-              <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>To register you as a new student and provide our training services</li>
-                <li>To process your applications and manage our relationship with you</li>
-                <li>To deliver relevant content and communications to you</li>
-                <li>To improve our website, services, and user experience</li>
-                <li>To issue and verify certificates of completion</li>
-              </ul>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Data Security</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Protection</h2>
               <p className="text-gray-700 leading-relaxed">
-                We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed. We limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know.
+                We take reasonable measures to protect your personal data from unauthorized access, loss, misuse, or disclosure. However, no method of transmission over the internet is 100% secure.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">5. Data Retention</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Third-Party Services</h2>
               <p className="text-gray-700 leading-relaxed">
-                We will only retain your personal data for as long as necessary to fulfil the purposes we collected it for, including for the purposes of satisfying any legal, accounting, or reporting requirements.
+                Our website may use third-party tools (such as analytics or hosting services) that may collect limited information according to their own privacy policies. We are not responsible for the privacy practices of third-party websites or services.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Your Legal Rights</h2>
-              <p className="text-gray-700 leading-relaxed mb-3">
-                Under certain circumstances, you have rights under data protection laws in relation to your personal data:
-              </p>
-              <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>Request access to your personal data</li>
-                <li>Request correction of your personal data</li>
-                <li>Request erasure of your personal data</li>
-                <li>Object to processing of your personal data</li>
-                <li>Request restriction of processing your personal data</li>
-                <li>Request transfer of your personal data</li>
-                <li>Right to withdraw consent</li>
-              </ul>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Cookies</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Cookies</h2>
               <p className="text-gray-700 leading-relaxed">
-                Our website uses cookies to distinguish you from other users of our website. This helps us to provide you with a good experience when you browse our website and also allows us to improve our site.
+                We may use cookies to enhance user experience and analyze website traffic. You can choose to disable cookies through your browser settings if you prefer.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Third-Party Links</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Consent</h2>
               <p className="text-gray-700 leading-relaxed">
-                Our website may include links to third-party websites, plug-ins and applications. Clicking on those links or enabling those connections may allow third parties to collect or share data about you. We do not control these third-party websites and are not responsible for their privacy statements.
+                By using our website, you agree to this Privacy Policy and the collection and use of information as described.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Contact Us</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Changes to This Policy</h2>
               <p className="text-gray-700 leading-relaxed">
-                If you have any questions about this privacy policy or our privacy practices, please contact us at:
+                We may update this Privacy Policy from time to time. Any changes will be posted on this page.
               </p>
-              <div className="mt-3 p-4 bg-gray-50 rounded-lg">
-                <p className="text-gray-700">
-                  Email: privacy@ezzcode.com<br />
-                  Phone: +1 (555) 123-4567<br />
-                  Address: 123 Tech Street, Innovation City, TC 12345
-                </p>
-              </div>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
+              <p className="text-gray-700 leading-relaxed">
+                If you have any questions or concerns about this Privacy Policy, feel free to contact us through our website.
+              </p>
             </div>
           </div>
         </div>

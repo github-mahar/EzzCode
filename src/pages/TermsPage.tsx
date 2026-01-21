@@ -117,15 +117,8 @@ export default function TermsPage() {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">12. Contact Information</h2>
               <p className="text-gray-700 leading-relaxed">
-                If you have any questions about these Terms and Conditions, please contact us:
+                If you have any questions about these Terms and Conditions, please contact us via our website.
               </p>
-              <div className="mt-3 p-4 bg-gray-50 rounded-lg">
-                <p className="text-gray-700">
-                  Email: legal@ezzcode.com<br />
-                  Phone: +1 (555) 123-4567<br />
-                  Address: 123 Tech Street, Innovation City, TC 12345
-                </p>
-              </div>
             </div>
           </div>
         </div>
