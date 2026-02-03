@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Mail, Send, CheckCircle, FileText, X } from 'lucide-react';
 import { supabase, Contact } from '../lib/supabase';
-import AdBanner from '../components/AdBanner';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState<Contact>({
@@ -18,7 +17,7 @@ export default function ContactPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     // Clear error when user starts typing
     if (error) setError('');
-    
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -27,7 +26,7 @@ export default function ContactPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (error) setError('');
-    
+
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type (PDF only)
@@ -36,7 +35,7 @@ export default function ContactPage() {
         e.target.value = '';
         return;
       }
-      
+
       // Validate file size (max 2MB)
       const maxSize = 2 * 1024 * 1024; // 2MB
       if (file.size > maxSize) {
@@ -44,7 +43,7 @@ export default function ContactPage() {
         e.target.value = '';
         return;
       }
-      
+
       setResumeFile(file);
     }
   };
@@ -88,10 +87,10 @@ export default function ContactPage() {
           .replace(/\s+/g, '_') // Replace spaces with underscores
           .replace(/_+/g, '_') // Replace multiple underscores with single
           .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
-        
+
         // Add timestamp to avoid duplicates if same person uploads multiple times
         const timestamp = Date.now();
-        
+
         // Use full name as filename: "FullName_timestamp.pdf"
         const fileName = `${sanitizedName}_${timestamp}.pdf`;
         const filePath = `resumes/${fileName}`;
@@ -109,7 +108,7 @@ export default function ContactPage() {
 
         if (uploadError) {
           console.error('Upload error details:', uploadError);
-          
+
           // Provide more specific error messages
           if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('The resource was not found')) {
             throw new Error('Storage bucket not configured. Please create a "contacts" bucket in Supabase Storage.');
@@ -185,7 +184,7 @@ export default function ContactPage() {
 
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Sidebar with Contact Info */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-white rounded-xl shadow-md p-6">
@@ -203,7 +202,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              
+
 
               <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-md p-6 text-white">
                 <h3 className="font-semibold mb-3">Quick Response</h3>
@@ -348,12 +347,6 @@ export default function ContactPage() {
                 </form>
               </div>
             </div>
-
-            {/* Right Sidebar with Ads */}
-            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
-              <AdBanner size="sidebar" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x600" />
-              <AdBanner size="medium" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x250" className="mt-6" />
-            </aside>
           </div>
         </div>
       </section>
