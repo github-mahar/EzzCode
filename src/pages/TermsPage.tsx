@@ -8,7 +8,7 @@ export default function TermsPage() {
           <div className="text-center">
             <FileText className="h-16 w-16 mx-auto mb-4" />
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Terms & Conditions</h1>
-            <p className="text-xl text-blue-100">Last updated: January 2024</p>
+            <p className="text-xl text-blue-100">Last updated: January 2026</p>
           </div>
         </div>
       </section>
