@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Mail, Send, CheckCircle, FileText, X } from 'lucide-react';
-import { supabase, Contact } from '../lib/supabase';
+import { useState, useEffect } from 'react';
+import { Mail, Send, CheckCircle, FileText, X, Phone, BookOpen } from 'lucide-react';
+import { supabase, Contact, Program } from '../lib/supabase';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState<Contact>({
@@ -8,14 +8,48 @@ export default function ContactPage() {
     email: '',
     message: '',
     resume_url: undefined,
+    whatsapp_number: '',
+    program_id: '',
   });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [loadingPrograms, setLoadingPrograms] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    fetchPrograms();
+  }, []);
+
+  const fetchPrograms = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('programs')
+        .select('*')
+        .eq('status', 'active')
+        .order('title', { ascending: true });
+
+      if (error) throw error;
+      setPrograms(data || []);
+    } catch (error) {
+      console.error('Error fetching programs:', error);
+    } finally {
+      setLoadingPrograms(false);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     // Clear error when user starts typing
+    if (error) setError('');
+
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (error) setError('');
 
     setFormData({
@@ -60,9 +94,9 @@ export default function ContactPage() {
     setError('');
     setSuccess(false);
 
-    // Validate all fields are filled
+    // Validate required fields
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setError('Please fill in all fields');
+      setError('Please fill in all required fields');
       setLoading(false);
       return;
     }
@@ -73,6 +107,16 @@ export default function ContactPage() {
       setError('Please enter a valid email address');
       setLoading(false);
       return;
+    }
+
+    // Validate WhatsApp number format if provided
+    if (formData.whatsapp_number && formData.whatsapp_number.trim()) {
+      const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/;
+      if (!phoneRegex.test(formData.whatsapp_number.trim())) {
+        setError('Please enter a valid WhatsApp number');
+        setLoading(false);
+        return;
+      }
     }
 
     try {
@@ -140,12 +184,14 @@ export default function ContactPage() {
         console.log('Resume URL:', resumeUrl);
       }
 
-      // Insert contact data with resume URL
+      // Insert contact data with all fields
       const contactData = {
         name: formData.name.trim(),
         email: formData.email.trim(),
         message: formData.message.trim(),
         resume_url: resumeUrl || null,
+        whatsapp_number: formData.whatsapp_number?.trim() || null,
+        program_id: formData.program_id || null,
       };
 
       const { error } = await supabase.from('contacts').insert([contactData]);
@@ -153,7 +199,7 @@ export default function ContactPage() {
       if (error) throw error;
 
       setSuccess(true);
-      setFormData({ name: '', email: '', message: '', resume_url: undefined });
+      setFormData({ name: '', email: '', message: '', resume_url: undefined, whatsapp_number: '', program_id: '' });
       setResumeFile(null);
       const fileInput = document.getElementById('resume') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
@@ -266,6 +312,60 @@ export default function ContactPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="john@example.com"
                     />
+                  </div>
+
+                  <div>
+                    <label htmlFor="whatsapp_number" className="block text-sm font-medium text-gray-700 mb-2">
+                      WhatsApp Number <span className="text-gray-500 text-xs">(Optional)</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Phone className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="tel"
+                        id="whatsapp_number"
+                        name="whatsapp_number"
+                        value={formData.whatsapp_number}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="+1 234 567 8900"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="program_id" className="block text-sm font-medium text-gray-700 mb-2">
+                      Interested Program <span className="text-gray-500 text-xs">(Optional)</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <BookOpen className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <select
+                        id="program_id"
+                        name="program_id"
+                        value={formData.program_id}
+                        onChange={handleSelectChange}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+                        disabled={loadingPrograms}
+                      >
+                        <option value="">Select a program...</option>
+                        {programs.map((program) => (
+                          <option key={program.id} value={program.id}>
+                            {program.title}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                    {loadingPrograms && (
+                      <p className="mt-1 text-xs text-gray-500">Loading programs...</p>
+                    )}
                   </div>
 
                   <div>
