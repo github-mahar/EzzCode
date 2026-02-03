@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { ArrowRight, Code, Users, Briefcase, Award, CheckCircle, BookOpen } from 'lucide-react';
 import { supabase, Program } from '../lib/supabase';
 import { Page } from '../components/Router';
-import AdBanner from '../components/AdBanner';
 
 interface HomePageProps {
   navigate: (page: Page) => void;
@@ -117,9 +116,8 @@ export default function HomePage({ navigate }: HomePageProps) {
 
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-3">
+          <div className="max-w-6xl mx-auto">
+            <div>
               <div className="text-center mb-16">
                 <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Programs</h2>
                 <p className="text-xl text-gray-600">Choose from our industry-leading training programs</p>
@@ -131,49 +129,49 @@ export default function HomePage({ navigate }: HomePageProps) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-              {programs.map((program) => (
-                <div
-                  key={program.id}
-                  className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-2"
-                >
-                  <div className="h-2 bg-gradient-to-r from-blue-500 to-blue-600"></div>
-                  <div className="p-6 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-bold text-gray-900">{program.title}</h3>
-                      <BookOpen className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <p className="text-gray-600 line-clamp-3">{program.description}</p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">Duration: {program.duration}</span>
-                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
-                        {program.category}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {program.skills.slice(0, 3).map((skill, idx) => (
-                        <span
-                          key={idx}
-                          className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                      {program.skills.length > 3 && (
-                        <span className="text-gray-500 text-sm">+{program.skills.length - 3} more</span>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => navigate('programs')}
-                      aria-label={`Learn more about ${program.title}`}
-                      className="w-full mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                  {programs.map((program) => (
+                    <div
+                      key={program.id}
+                      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-2"
                     >
-                      Learn More
-                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </button>
-                  </div>
+                      <div className="h-2 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                      <div className="p-6 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xl font-bold text-gray-900">{program.title}</h3>
+                          <BookOpen className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <p className="text-gray-600 line-clamp-3">{program.description}</p>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-500">Duration: {program.duration}</span>
+                          <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
+                            {program.category}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {program.skills.slice(0, 3).map((skill, idx) => (
+                            <span
+                              key={idx}
+                              className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {program.skills.length > 3 && (
+                            <span className="text-gray-500 text-sm">+{program.skills.length - 3} more</span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => navigate('programs')}
+                          aria-label={`Learn more about ${program.title}`}
+                          className="w-full mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                        >
+                          Learn More
+                          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
               )}
 
               <div className="text-center mt-12">
@@ -186,49 +184,37 @@ export default function HomePage({ navigate }: HomePageProps) {
                 </button>
               </div>
             </div>
-
-            {/* Right Sidebar with Ads */}
-            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
-              <AdBanner size="sidebar" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x600" />
-              <AdBanner size="medium" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x250" className="mt-6" />
-            </aside>
           </div>
         </div>
       </section>
 
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-3">
+          <div className="max-w-6xl mx-auto">
+            <div>
               <div className="text-center mb-16">
                 <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose EzzCode?</h2>
                 <p className="text-xl text-gray-600">We provide everything you need to succeed in tech</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, idx) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={idx}
-                  className="text-center space-y-4 p-6 rounded-xl hover:bg-gray-50 transition-all group"
-                >
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full group-hover:bg-blue-600 transition-colors">
-                    <Icon className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </div>
-              );
-            })}
+                {features.map((feature, idx) => {
+                  const Icon = feature.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="text-center space-y-4 p-6 rounded-xl hover:bg-gray-50 transition-all group"
+                    >
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full group-hover:bg-blue-600 transition-colors">
+                        <Icon className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">{feature.title}</h3>
+                      <p className="text-gray-600">{feature.description}</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-
-            {/* Right Sidebar with Ads */}
-            <aside className="lg:col-span-1 space-y-6" aria-label="Advertisement sidebar">
-              <AdBanner size="sidebar" adSlot="9423164994" adFormat="auto" fullWidthResponsive placeholderText="Advertisement" placeholderDetails="300x600" />
-            </aside>
           </div>
         </div>
       </section>
