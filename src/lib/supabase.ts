@@ -32,6 +32,6 @@ export interface Contact {
   email: string;
   message: string;
   resume_url?: string;
-  whatsapp_number?: string;
-  program_id?: string;
+  whatsapp_number: string;
+  program_id: string;
 }

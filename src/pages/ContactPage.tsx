@@ -8,7 +8,7 @@ export default function ContactPage() {
     email: '',
     message: '',
     resume_url: undefined,
-    whatsapp_number: '',
+    whatsapp_number: '+1',
     program_id: '',
   });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -95,7 +95,7 @@ export default function ContactPage() {
     setSuccess(false);
 
     // Validate required fields
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim() || !formData.whatsapp_number.trim() || !formData.program_id) {
       setError('Please fill in all required fields');
       setLoading(false);
       return;
@@ -109,14 +109,19 @@ export default function ContactPage() {
       return;
     }
 
-    // Validate WhatsApp number format if provided
-    if (formData.whatsapp_number && formData.whatsapp_number.trim()) {
-      const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/;
-      if (!phoneRegex.test(formData.whatsapp_number.trim())) {
-        setError('Please enter a valid WhatsApp number');
-        setLoading(false);
-        return;
-      }
+    // Validate WhatsApp number format (required and must be valid)
+    const phoneRegex = /^[+]?[0-9]{1,4}[-\s]?[(]?[0-9]{1,4}[)]?[-\s]?[0-9]{1,9}$/;
+    if (!phoneRegex.test(formData.whatsapp_number.trim())) {
+      setError('Please enter a valid WhatsApp number (e.g., +1 234 567 8900)');
+      setLoading(false);
+      return;
+    }
+
+    // Validate program selection
+    if (!formData.program_id || formData.program_id === '') {
+      setError('Please select a program you are interested in');
+      setLoading(false);
+      return;
     }
 
     try {
@@ -190,8 +195,8 @@ export default function ContactPage() {
         email: formData.email.trim(),
         message: formData.message.trim(),
         resume_url: resumeUrl || null,
-        whatsapp_number: formData.whatsapp_number?.trim() || null,
-        program_id: formData.program_id || null,
+        whatsapp_number: formData.whatsapp_number.trim(),
+        program_id: formData.program_id,
       };
 
       const { error } = await supabase.from('contacts').insert([contactData]);
@@ -199,7 +204,7 @@ export default function ContactPage() {
       if (error) throw error;
 
       setSuccess(true);
-      setFormData({ name: '', email: '', message: '', resume_url: undefined, whatsapp_number: '', program_id: '' });
+      setFormData({ name: '', email: '', message: '', resume_url: undefined, whatsapp_number: '+1', program_id: '' });
       setResumeFile(null);
       const fileInput = document.getElementById('resume') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
@@ -316,27 +321,82 @@ export default function ContactPage() {
 
                   <div>
                     <label htmlFor="whatsapp_number" className="block text-sm font-medium text-gray-700 mb-2">
-                      WhatsApp Number <span className="text-gray-500 text-xs">(Optional)</span>
+                      WhatsApp Number <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Phone className="h-5 w-5 text-gray-400" />
+                    <div className="flex gap-2">
+                      <div className="relative w-32">
+                        <select
+                          id="country_code"
+                          name="country_code"
+                          value={formData.whatsapp_number.split(' ')[0] || '+1'}
+                          onChange={(e) => {
+                            const code = e.target.value;
+                            const number = formData.whatsapp_number.split(' ').slice(1).join(' ');
+                            setFormData({ ...formData, whatsapp_number: `${code} ${number}`.trim() });
+                          }}
+                          className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+                        >
+                          <option value="+1">🇺🇸 +1</option>
+                          <option value="+44">🇬🇧 +44</option>
+                          <option value="+91">🇮🇳 +91</option>
+                          <option value="+92">🇵🇰 +92</option>
+                          <option value="+86">🇨🇳 +86</option>
+                          <option value="+81">🇯🇵 +81</option>
+                          <option value="+82">🇰🇷 +82</option>
+                          <option value="+49">🇩🇪 +49</option>
+                          <option value="+33">🇫🇷 +33</option>
+                          <option value="+39">🇮🇹 +39</option>
+                          <option value="+34">🇪🇸 +34</option>
+                          <option value="+7">🇷🇺 +7</option>
+                          <option value="+61">🇦🇺 +61</option>
+                          <option value="+64">🇳🇿 +64</option>
+                          <option value="+27">🇿🇦 +27</option>
+                          <option value="+234">🇳🇬 +234</option>
+                          <option value="+254">🇰🇪 +254</option>
+                          <option value="+20">🇪🇬 +20</option>
+                          <option value="+971">🇦🇪 +971</option>
+                          <option value="+966">🇸🇦 +966</option>
+                          <option value="+55">🇧🇷 +55</option>
+                          <option value="+52">🇲🇽 +52</option>
+                          <option value="+54">🇦🇷 +54</option>
+                          <option value="+62">🇮🇩 +62</option>
+                          <option value="+60">🇲🇾 +60</option>
+                          <option value="+65">🇸🇬 +65</option>
+                          <option value="+66">🇹🇭 +66</option>
+                          <option value="+84">🇻🇳 +84</option>
+                          <option value="+63">🇵🇭 +63</option>
+                        </select>
+                        <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                          <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
                       </div>
-                      <input
-                        type="tel"
-                        id="whatsapp_number"
-                        name="whatsapp_number"
-                        value={formData.whatsapp_number}
-                        onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="+1 234 567 8900"
-                      />
+                      <div className="relative flex-1">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Phone className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="tel"
+                          id="whatsapp_number"
+                          name="whatsapp_number"
+                          value={formData.whatsapp_number.split(' ').slice(1).join(' ')}
+                          onChange={(e) => {
+                            const code = formData.whatsapp_number.split(' ')[0] || '+1';
+                            setFormData({ ...formData, whatsapp_number: `${code} ${e.target.value}`.trim() });
+                          }}
+                          required
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="234 567 8900"
+                        />
+                      </div>
                     </div>
+                    <p className="mt-1 text-xs text-gray-500">Select your country code and enter your phone number</p>
                   </div>
 
                   <div>
                     <label htmlFor="program_id" className="block text-sm font-medium text-gray-700 mb-2">
-                      Interested Program <span className="text-gray-500 text-xs">(Optional)</span>
+                      Interested Program <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -347,6 +407,7 @@ export default function ContactPage() {
                         name="program_id"
                         value={formData.program_id}
                         onChange={handleSelectChange}
+                        required
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
                         disabled={loadingPrograms}
                       >
