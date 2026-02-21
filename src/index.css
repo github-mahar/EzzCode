@@ -39,9 +39,24 @@
 
   a,
   button,
-  [role="button"] {
+  [role="button"],
+  input,
+  textarea,
+  select,
+  label {
+    cursor: none !important;
+  }
+
+  /* Force cursor hide on everything for absolute consistency */
+  * {
     cursor: none;
-    /* Hide default cursor on interactive elements too */
+  }
+
+  /* But restore on mobile/touch */
+  @media (hover: none) and (pointer: coarse) {
+    * {
+      cursor: auto !important;
+    }
   }
 
   .text-glow-hover:hover {
