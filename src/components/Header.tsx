@@ -12,7 +12,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -31,29 +31,25 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ${scrolled
-          ? 'glass-nav shadow-lg shadow-black/20'
-          : 'bg-transparent'
+      className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
+          ? 'bg-white/90 backdrop-blur-xl shadow-sm border-b border-slate-100'
+          : 'bg-white'
         }`}
     >
       <nav className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-20">
+        <div className="flex justify-between items-center h-18 py-4">
           {/* Logo */}
           <a
             href="#home"
             className="flex items-center space-x-2.5 cursor-pointer group"
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavigate('home');
-            }}
+            onClick={(e) => { e.preventDefault(); handleNavigate('home'); }}
             aria-label="EzzCode Home"
           >
-            <div className="relative">
-              <Code2 className="h-8 w-8 text-accent-green transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
-              <div className="absolute inset-0 bg-accent-green/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-shadow">
+              <Code2 className="h-5 w-5 text-white" aria-hidden="true" />
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">
-              EZZ<span className="text-accent-green">CODE</span>
+            <span className="text-xl font-bold text-slate-900 tracking-tight">
+              Ezz<span className="gradient-text">Code</span>
             </span>
           </a>
 
@@ -63,17 +59,13 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
               <button
                 key={page}
                 onClick={() => handleNavigate(page)}
-                aria-label={`Navigate to ${label}`}
                 aria-current={currentPage === page ? 'page' : undefined}
-                className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${currentPage === page
-                    ? 'text-accent-green'
-                    : 'text-slate-400 hover:text-white'
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentPage === page
+                    ? 'text-primary-600 bg-primary-50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
               >
                 {label}
-                {currentPage === page && (
-                  <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-accent-green rounded-full" />
-                )}
               </button>
             ))}
           </div>
@@ -81,8 +73,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
           {/* Desktop CTA */}
           <button
             onClick={() => handleNavigate('programs')}
-            aria-label="Apply to programs"
-            className="hidden md:flex btn-primary !px-6 !py-2.5 text-sm"
+            className="hidden md:flex btn-primary !py-2.5 !px-6 text-sm"
           >
             Apply Now
           </button>
@@ -92,42 +83,29 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
-            className="md:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+            className="md:hidden p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
           >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Menu className="h-6 w-6" aria-hidden="true" />
-            )}
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </nav>
 
       {/* Mobile Menu */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-          }`}
-      >
-        <div className="glass-nav px-6 pb-6 pt-2 space-y-1 border-t border-white/5">
+      <div className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className="px-6 pb-6 pt-2 space-y-1 border-t border-slate-100 bg-white">
           {navItems.map(({ page, label }) => (
             <button
               key={page}
               onClick={() => handleNavigate(page)}
-              aria-label={`Navigate to ${label}`}
-              aria-current={currentPage === page ? 'page' : undefined}
               className={`block w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-all ${currentPage === page
-                  ? 'text-accent-green bg-accent-green/5'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'text-primary-600 bg-primary-50'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
             >
               {label}
             </button>
           ))}
-          <button
-            onClick={() => handleNavigate('programs')}
-            aria-label="Apply to programs"
-            className="w-full mt-3 btn-primary text-sm"
-          >
+          <button onClick={() => handleNavigate('programs')} className="w-full mt-3 btn-primary text-sm">
             Apply Now
           </button>
         </div>

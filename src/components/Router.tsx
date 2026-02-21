@@ -38,7 +38,7 @@ export default function Router() {
   const renderPage = () => {
     const LoadingFallback = () => (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-12 h-12 border-[3px] border-white/10 border-t-accent-green rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-[3px] border-slate-200 border-t-primary-600 rounded-full animate-spin"></div>
       </div>
     );
 
