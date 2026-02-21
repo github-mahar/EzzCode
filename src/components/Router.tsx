@@ -81,7 +81,7 @@ export default function Router() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-base-dark">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header currentPage={currentPage} navigate={navigate} />
       <main className="flex-grow">
         {renderPage()}
