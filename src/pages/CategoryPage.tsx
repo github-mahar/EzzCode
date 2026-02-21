@@ -152,7 +152,7 @@ export default function CategoryPage({ category, navigate }: CategoryPageProps) 
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white mb-4 leading-tight">
                                 {data.subtitle}
                             </h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-lg mb-8 leading-relaxed max-w-xl">
+                            <p className="text-slate-500 dark:text-slate-400 text-lg mb-8 leading-relaxed max-w-xl rich-text-content">
                                 {data.description}
                             </p>
 
@@ -178,11 +178,11 @@ export default function CategoryPage({ category, navigate }: CategoryPageProps) 
 
                         {/* Right: Hero Image */}
                         <div className="relative">
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/10 dark:shadow-black/30">
+                            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/10 dark:shadow-black/30 category-image-container">
                                 <img
                                     src={data.image}
                                     alt={data.title}
-                                    className="w-full h-[320px] md:h-[400px] object-cover"
+                                    className="w-full h-[320px] md:h-[400px] object-cover transition-transform duration-700 hover:scale-110"
                                 />
                                 <div className={`absolute inset-0 bg-gradient-to-t ${data.color} opacity-10`} />
                             </div>
@@ -298,7 +298,7 @@ export default function CategoryPage({ category, navigate }: CategoryPageProps) 
                     <div className="card !p-10 !border-primary-100 dark:!border-primary-500/20 bg-gradient-to-br from-white to-primary-50/50 dark:from-slate-800 dark:to-primary-900/20">
                         <GraduationCap className="h-10 w-10 text-primary-500 dark:text-primary-400 mx-auto mb-4" />
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Ready to Get Started?</h2>
-                        <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-xl mx-auto">
+                        <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-xl mx-auto rich-text-content">
                             Join our {data.title.toLowerCase()} programs and transform your career with industry-recognized training and real-world projects.
                         </p>
                         <button onClick={() => navigate('contact')} className="btn-primary text-base !py-3.5 !px-8">

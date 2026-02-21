@@ -128,7 +128,7 @@ export default function HomePage({ navigate }: HomePageProps) {
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
               Shaping Future<br /><TextRotator />
             </h1>
-            <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed rich-text-content">
               Join EzzCode's comprehensive tech training and internship programs. Gain real-world experience, build production-ready projects, and launch your career.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
@@ -162,7 +162,7 @@ export default function HomePage({ navigate }: HomePageProps) {
           <div className="text-center mb-16">
             <div className="badge mx-auto mb-4 font-bold tracking-wider px-4 py-1.5 uppercase"><Layers className="h-4 w-4" /><span>How It Works</span></div>
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">A Seamless Learning Process</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-lg mt-5 max-w-2xl mx-auto leading-relaxed">From discovery to mastery — our structured approach ensures you build real skills step by step.</p>
+            <p className="text-slate-500 dark:text-slate-400 text-lg mt-5 max-w-2xl mx-auto leading-relaxed rich-text-content">From discovery to mastery — our structured approach ensures you build real skills step by step.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map(({ num, label, title, desc, icon: Icon }, idx) => (
@@ -189,7 +189,7 @@ export default function HomePage({ navigate }: HomePageProps) {
             <div className="space-y-8">
               <div className="badge font-bold tracking-wider px-4 py-1.5 uppercase"><BookOpen className="h-4 w-4" /><span>What We Do</span></div>
               <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">Empowering Connections in the Digital World</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">
+              <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed rich-text-content">
                 We equip future professionals with the essential tools to thrive in both traditional and digital IT landscapes. With years of experience and countless successful placements, EzzCode has perfected a unique learning process that goes beyond theory.
               </p>
               <div className="space-y-4">
