@@ -1,6 +1,7 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, useLocation } from 'react-router-dom';
+import { ThemeProvider } from './components/ThemeProvider';
 import App from './App';
 import './index.css';
 
@@ -34,9 +35,11 @@ function AnalyticsTracker() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <AnalyticsTracker />
-      <App />
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <AnalyticsTracker />
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </StrictMode>
 );

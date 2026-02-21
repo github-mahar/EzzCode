@@ -23,9 +23,19 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  .dark body {
+    background-color: #0F172A;
+    color: #CBD5E1;
+  }
+
   ::selection {
     background-color: rgba(99, 102, 241, 0.15);
     color: #312E81;
+  }
+
+  .dark ::selection {
+    background-color: rgba(99, 102, 241, 0.3);
+    color: #E0E7FF;
   }
 }
 
@@ -44,6 +54,17 @@
     border-color: #C7D2FE;
     box-shadow: 0 20px 60px -12px rgba(99, 102, 241, 0.15);
     transform: translateY(-4px);
+  }
+
+  .dark .card {
+    background: rgba(30, 41, 59, 0.6);
+    border-color: rgba(51, 65, 85, 0.5);
+    backdrop-filter: blur(12px);
+  }
+
+  .dark .card:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 20px 60px -12px rgba(99, 102, 241, 0.2);
   }
 
   /* ---- Buttons ---- */
@@ -89,6 +110,15 @@
     transform: translateY(-1px);
   }
 
+  .dark .btn-secondary {
+    background: rgba(99, 102, 241, 0.15);
+    color: #A5B4FC;
+  }
+
+  .dark .btn-secondary:hover {
+    background: rgba(99, 102, 241, 0.25);
+  }
+
   .btn-outline {
     display: inline-flex;
     align-items: center;
@@ -110,7 +140,17 @@
     border-color: #6366F1;
   }
 
-  /* ---- Scroll animation ---- */
+  .dark .btn-outline {
+    color: #A5B4FC;
+    border-color: rgba(99, 102, 241, 0.4);
+  }
+
+  .dark .btn-outline:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366F1;
+  }
+
+  /* ---- Scroll reveal ---- */
   .animate-section {
     opacity: 0;
     transform: translateY(30px);
@@ -122,7 +162,7 @@
     transform: translateY(0);
   }
 
-  /* ---- Form Inputs ---- */
+  /* ---- Form fields ---- */
   .input-field {
     width: 100%;
     padding: 14px 18px;
@@ -142,6 +182,21 @@
     outline: none;
     border-color: #6366F1;
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  }
+
+  .dark .input-field {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(51, 65, 85, 0.6);
+    color: #E2E8F0;
+  }
+
+  .dark .input-field::placeholder {
+    color: #64748B;
+  }
+
+  .dark .input-field:focus {
+    border-color: #6366F1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
   }
 
   /* ---- Gradient text ---- */
@@ -165,13 +220,26 @@
     font-weight: 600;
   }
 
-  /* ---- Section Divider ---- */
+  .dark .badge {
+    background: rgba(99, 102, 241, 0.15);
+    color: #A5B4FC;
+  }
+
+  /* ---- Section backgrounds ---- */
   .section-white {
     background-color: #ffffff;
   }
 
   .section-gray {
     background-color: #F8FAFC;
+  }
+
+  .dark .section-white {
+    background-color: #0F172A;
+  }
+
+  .dark .section-gray {
+    background-color: #1E293B;
   }
 }
 
