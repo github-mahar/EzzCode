@@ -3,13 +3,13 @@ import { FileText } from 'lucide-react';
 export default function TermsPage() {
   return (
     <div>
-      <section className="relative bg-gradient-to-br from-primary-50 via-white to-purple-50 py-20 md:py-24 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 py-20 md:py-24 overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-2xl mb-4">
-            <FileText className="h-8 w-8 text-primary-600" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 dark:bg-primary-500/10 rounded-2xl mb-4">
+            <FileText className="h-8 w-8 text-primary-600 dark:text-primary-400" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-3">Terms & Conditions</h1>
-          <p className="text-slate-400 text-sm">Last updated: February 2026</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">Terms & Conditions</h1>
+          <p className="text-slate-400 dark:text-slate-500 text-sm">Last updated: February 2026</p>
         </div>
       </section>
       <section className="section-white py-16 lg:py-20">
@@ -27,8 +27,8 @@ export default function TermsPage() {
               { title: 'Contact', body: 'For questions about these Terms and Conditions, please contact us at info@ezzcode.com.' },
             ].map(({ title, body }) => (
               <div key={title}>
-                <h2 className="text-xl font-bold text-slate-900 mb-3">{title}</h2>
-                <p className="text-slate-500 leading-relaxed text-sm">{body}</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{title}</h2>
+                <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">{body}</p>
               </div>
             ))}
           </div>
