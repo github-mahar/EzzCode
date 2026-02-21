@@ -1,6 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
-import { Award, Search, CheckCircle, XCircle, Shield } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Search, CheckCircle, XCircle, Shield, Download } from 'lucide-react';
 import { supabase, Certificate } from '../lib/supabase';
+import { jsPDF } from 'jspdf';
+import logoSrc from '../EZZCODE.jpg';
+import sealSrc from '../ezzcode_wax_seal.png';
 
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,10 +21,179 @@ function useScrollReveal() {
   return { ref, visible };
 }
 
+/* ── Helpers ── */
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+/* ── Draw full certificate ── */
+async function drawCertificate(cert: Certificate): Promise<HTMLCanvasElement> {
+  const W = 1400;
+  const H = 1000;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d')!;
+  const CX = W / 2;
+
+  // Fill ENTIRE canvas white (no black corners in JPG)
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, H);
+
+  // Mint green outer background
+  roundRect(ctx, 0, 0, W, H, 32);
+  ctx.fillStyle = '#A7F3D0';
+  ctx.fill();
+
+  // White inner card
+  const IN = 36;
+  roundRect(ctx, IN, IN, W - IN * 2, H - IN * 2, 24);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fill();
+
+  // Load EzzCode logo
+  try {
+    const logo = await loadImage(logoSrc);
+    ctx.drawImage(logo, CX - 32, 72, 64, 64);
+  } catch {
+    ctx.font = 'bold 44px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#3B82F6';
+    ctx.textAlign = 'center';
+    ctx.fillText('</>', CX, 115);
+  }
+
+  // "EzzCode" brand
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 36px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#1E40AF';
+  ctx.fillText('EzzCode', CX, 168);
+
+  // "Certificate Verified" badge
+  const badgeY = 198;
+  const badgeW = 280;
+  const badgeH = 44;
+  const badgeX = CX - badgeW / 2;
+  roundRect(ctx, badgeX, badgeY, badgeW, badgeH, badgeH / 2);
+  ctx.strokeStyle = '#34D399';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  // Checkmark
+  const chkX = badgeX + 30, chkY = badgeY + badgeH / 2;
+  ctx.beginPath();
+  ctx.arc(chkX, chkY, 12, 0, Math.PI * 2);
+  ctx.fillStyle = '#34D399';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(chkX - 4.5, chkY + 0.5);
+  ctx.lineTo(chkX - 1, chkY + 4);
+  ctx.lineTo(chkX + 6, chkY - 4);
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  ctx.font = '600 18px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#059669';
+  ctx.textAlign = 'center';
+  ctx.fillText('Certificate Verified', CX + 10, badgeY + 29);
+
+  // Title
+  ctx.font = 'bold 52px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#0F172A';
+  ctx.fillText('Certificate of Completion', CX, 328);
+
+  // Awarded to
+  ctx.font = 'italic 22px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#94A3B8';
+  ctx.fillText('Awarded to', CX, 400);
+
+  // Student name
+  ctx.font = 'bold 46px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#312E81';
+  ctx.fillText(cert.student_name, CX, 462);
+
+  // For completing
+  ctx.font = 'italic 22px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#94A3B8';
+  ctx.fillText('For completing', CX, 530);
+
+  // Program name
+  ctx.font = 'bold 40px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#0F172A';
+  ctx.fillText(cert.program_name, CX, 590);
+
+  // Divider line
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(IN + 60, 660);
+  ctx.lineTo(W - IN - 60, 660);
+  ctx.stroke();
+
+  // Certificate ID (left)
+  ctx.textAlign = 'left';
+  ctx.font = '600 14px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#94A3B8';
+  ctx.fillText('CERTIFICATE ID', IN + 80, 720);
+  ctx.font = 'bold 20px "JetBrains Mono", "Courier New", monospace';
+  ctx.fillStyle = '#059669';
+  ctx.fillText(cert.certificate_id, IN + 80, 754);
+
+  // Issue Date (right)
+  ctx.textAlign = 'right';
+  ctx.font = '600 14px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#94A3B8';
+  ctx.fillText('ISSUE DATE', W - IN - 80, 720);
+  const dateStr = new Date(cert.issue_date).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  });
+  ctx.font = '600 20px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#0F172A';
+  ctx.fillText(dateStr, W - IN - 80, 754);
+
+  // ── Wax seal stamp image (bottom-right) ──
+  try {
+    const seal = await loadImage(sealSrc);
+    const sealSize = 180;
+    ctx.drawImage(seal, CX - sealSize / 2, H - IN - sealSize - 30, sealSize, sealSize);
+  } catch {
+    // Fallback if image fails to load
+  }
+
+  // Bottom branding
+  ctx.textAlign = 'center';
+  ctx.font = '500 13px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#CBD5E1';
+  ctx.fillText('www.ezzcode.online', CX, H - 52);
+
+  return canvas;
+}
+
 export default function CertificatePage() {
   const [certificateId, setCertificateId] = useState('');
   const [certificate, setCertificate] = useState<Certificate | null>(null);
   const [loading, setLoading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState('');
   const s1 = useScrollReveal();
 
@@ -41,6 +213,22 @@ export default function CertificatePage() {
       setError('An error occurred while verifying. Please try again later.');
     } finally { setLoading(false); }
   };
+
+  const handleDownload = useCallback(async () => {
+    if (!certificate) return;
+    setDownloading(true);
+    try {
+      const canvas = await drawCertificate(certificate);
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdfW = 297;
+      const pdfH = (canvas.height / canvas.width) * pdfW;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [pdfW, pdfH] });
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+      pdf.save(`${certificate.certificate_id}.pdf`);
+    } catch (err) {
+      console.error('Download failed:', err);
+    } finally { setDownloading(false); }
+  }, [certificate]);
 
   return (
     <div>
@@ -62,7 +250,7 @@ export default function CertificatePage() {
               <label htmlFor="cert-id" className="block text-sm font-semibold text-slate-700 dark:text-slate-300">Certificate ID</label>
               <div className="flex gap-3">
                 <input id="cert-id" type="text" value={certificateId} onChange={(e) => setCertificateId(e.target.value)}
-                  placeholder="e.g. EZZCODE-2025-01-001" className="input-field flex-1 font-mono tracking-wider uppercase" />
+                  placeholder="e.g. EZZCODE-2024-WD-001" className="input-field flex-1 font-mono tracking-wider uppercase" />
                 <button type="submit" disabled={loading} className="btn-primary !px-6 whitespace-nowrap disabled:opacity-50">
                   {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><Search className="h-5 w-5" /> Verify</>}
                 </button>
@@ -95,27 +283,33 @@ export default function CertificatePage() {
                 </span>
               </div>
               <div className="text-center space-y-5">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 dark:bg-primary-500/10 rounded-3xl">
-                  <Award className="h-9 w-9 text-primary-600 dark:text-primary-400" />
-                </div>
+                <img src={logoSrc} alt="EzzCode Logo" className="w-14 h-14 mx-auto" />
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Certificate of Completion</h3>
                 <div className="space-y-1">
-                  <p className="text-slate-400 dark:text-slate-500 text-sm">Awarded to</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm italic">Awarded to</p>
                   <p className="text-xl font-bold gradient-text">{certificate.student_name}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-slate-400 dark:text-slate-500 text-sm">For completing</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm italic">For completing</p>
                   <p className="text-xl font-bold text-slate-900 dark:text-white">{certificate.program_name}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200 dark:border-slate-700 max-w-sm mx-auto">
                   <div>
                     <p className="text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wider mb-1">Certificate ID</p>
-                    <p className="font-mono text-primary-600 dark:text-primary-400 text-sm font-bold">{certificate.certificate_id}</p>
+                    <p className="font-mono text-emerald-600 dark:text-emerald-400 text-sm font-bold">{certificate.certificate_id}</p>
                   </div>
                   <div>
                     <p className="text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wider mb-1">Issue Date</p>
-                    <p className="text-slate-900 dark:text-white text-sm">{new Date(certificate.issue_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p className="text-slate-900 dark:text-white text-sm font-semibold">{new Date(certificate.issue_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   </div>
+                </div>
+                <div className="pt-4">
+                  <button onClick={handleDownload} disabled={downloading} className="btn-primary !py-3 !px-8 text-base disabled:opacity-50">
+                    {downloading
+                      ? <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Generating...</>
+                      : <><Download className="h-5 w-5" /> Download Certificate (PDF)</>
+                    }
+                  </button>
                 </div>
               </div>
             </div>
