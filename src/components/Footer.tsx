@@ -41,7 +41,7 @@ export default function Footer({ navigate }: FooterProps) {
           <div>
             <h3 className="font-semibold mb-5 text-sm uppercase tracking-wider text-slate-300">Quick Links</h3>
             <ul className="space-y-3">
-              {([['home', 'Home'], ['programs', 'Programs'], ['certificate', 'Verify Certificate'], ['contact', 'Contact']] as [Page, string][]).map(([page, label]) => (
+              {([['home', 'Home'], ['certificate', 'Verify Certificate'], ['contact', 'Contact']] as [Page, string][]).map(([page, label]) => (
                 <li key={page}>
                   <button onClick={() => navigate(page)}
                     className="text-slate-400 hover:text-primary-400 transition-colors text-sm flex items-center gap-1.5 group">

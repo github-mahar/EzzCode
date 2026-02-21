@@ -2,9 +2,9 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import HomePage from '../pages/HomePage';
+import CustomCursor from './CustomCursor';
 
 // Lazy load page components for code splitting
-const ProgramsPage = lazy(() => import('../pages/ProgramsPage'));
 const CertificatePage = lazy(() => import('../pages/CertificatePage'));
 const ContactPage = lazy(() => import('../pages/ContactPage'));
 const PrivacyPage = lazy(() => import('../pages/PrivacyPage'));
@@ -13,7 +13,6 @@ const CategoryPage = lazy(() => import('../pages/CategoryPage'));
 
 export type Page =
   | 'home'
-  | 'programs'
   | 'certificate'
   | 'contact'
   | 'privacy'
@@ -33,7 +32,7 @@ const CATEGORY_PAGES: Record<string, string> = {
 };
 
 const VALID_PAGES: Page[] = [
-  'home', 'programs', 'certificate', 'contact', 'privacy', 'terms',
+  'home', 'certificate', 'contact', 'privacy', 'terms',
   'program-web-development', 'program-artificial-intelligence', 'program-data-science', 'program-python', 'program-mobile-development'
 ];
 
@@ -78,12 +77,6 @@ export default function Router() {
     switch (currentPage) {
       case 'home':
         return <HomePage navigate={navigate} />;
-      case 'programs':
-        return (
-          <Suspense fallback={<LoadingFallback />}>
-            <ProgramsPage navigate={navigate} />
-          </Suspense>
-        );
       case 'certificate':
         return (
           <Suspense fallback={<LoadingFallback />}>
@@ -115,6 +108,7 @@ export default function Router() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
+      <CustomCursor />
       <Header currentPage={currentPage} navigate={navigate} />
       <main className="flex-grow">
         {renderPage()}

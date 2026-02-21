@@ -70,7 +70,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
     setDropdownOpen(false);
   };
 
-  const isProgramActive = currentPage.startsWith('program-') || currentPage === 'programs';
+  const isProgramActive = currentPage.startsWith('program-');
 
   return (
     <header
@@ -91,7 +91,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
             <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-shadow">
               <Code2 className="h-5 w-5 text-white" aria-hidden="true" />
             </div>
-            <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight text-glow-hover transition-all">
               Ezz<span className="gradient-text">Code</span>
             </span>
           </a>
@@ -153,14 +153,6 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
                       </div>
                     </button>
                   ))}
-                  <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                    <button
-                      onClick={() => handleNavigate('programs')}
-                      className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-bold text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 rounded-xl transition-colors"
-                    >
-                      View All Programs <ChevronDown className="-rotate-90 h-4 w-4" />
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -189,12 +181,12 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
           <div className="hidden md:flex items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+              className="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all custom-cursor-hover"
             >
               {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </button>
             <button
-              onClick={() => handleNavigate('programs')}
+              onClick={() => handleNavigate('contact')}
               className="btn-primary !py-2.5 !px-6 text-sm"
             >
               Apply Now
@@ -240,12 +232,6 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
                 <Icon className="h-5 w-5" /> {label}
               </button>
             ))}
-            <button
-              onClick={() => handleNavigate('programs')}
-              className="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-primary-600 dark:text-primary-400"
-            >
-              View All Programs
-            </button>
           </div>
 
           <button
@@ -260,7 +246,7 @@ export default function Header({ currentPage, navigate }: HeaderProps) {
           >
             Contact
           </button>
-          <button onClick={() => handleNavigate('programs')} className="w-full mt-4 btn-primary !py-3.5">
+          <button onClick={() => handleNavigate('contact')} className="w-full mt-4 btn-primary !py-3.5">
             Apply Now
           </button>
         </div>

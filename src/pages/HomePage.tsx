@@ -1,11 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Code, Users, Briefcase, Award, CheckCircle, BookOpen, Sparkles, Layers, TrendingUp, Star, Quote } from 'lucide-react';
+import { ArrowRight, Code, Users, Briefcase, Award, CheckCircle, BookOpen, Sparkles, Layers, TrendingUp, Star, Quote, Clock, ChevronRight } from 'lucide-react';
 import { supabase, Program } from '../lib/supabase';
 import { Page } from '../components/Router';
 
 interface HomePageProps {
   navigate: (page: Page) => void;
 }
+
+const CATEGORY_STYLES: Record<string, string> = {
+  'Web Development': 'from-blue-600 to-indigo-700',
+  'Artificial Intelligence': 'from-purple-600 to-violet-700',
+  'Data Science': 'from-emerald-600 to-teal-700',
+  'Python': 'from-yellow-600 to-amber-700',
+  'Mobile Development': 'from-rose-600 to-pink-700',
+};
 
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -116,7 +124,7 @@ export default function HomePage({ navigate }: HomePageProps) {
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28">
           <div className="text-center space-y-8 max-w-4xl mx-auto">
-            <div className="badge mx-auto"><Sparkles className="h-3.5 w-3.5" /><span>Empowering Future IT Talent</span></div>
+            <div className="badge mx-auto font-bold tracking-wider px-4 py-1.5 uppercase"><Sparkles className="h-4 w-4" /><span>Empowering Future IT Talent</span></div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
               Shaping Future<br /><TextRotator />
             </h1>
@@ -124,8 +132,8 @@ export default function HomePage({ navigate }: HomePageProps) {
               Join EzzCode's comprehensive tech training and internship programs. Gain real-world experience, build production-ready projects, and launch your career.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
-              <button onClick={() => navigate('programs')} className="btn-primary text-base">Get Started <ArrowRight className="h-5 w-5" /></button>
-              <button onClick={() => navigate('programs')} className="btn-outline text-base">Explore Programs</button>
+              <button onClick={() => navigate('program-web-development')} className="btn-primary text-base !py-4 !px-10">Get Started <ArrowRight className="h-5 w-5" /></button>
+              <button onClick={() => navigate('program-web-development')} className="btn-outline text-base !py-4 !px-10">Explore Categories</button>
             </div>
           </div>
 
@@ -141,7 +149,7 @@ export default function HomePage({ navigate }: HomePageProps) {
                 <div className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
                   <AnimatedCounter target={val} suffix={suffix} />
                 </div>
-                <div className="text-slate-400 dark:text-slate-500 text-sm mt-1">{label}</div>
+                <div className="text-slate-400 dark:text-slate-500 text-sm mt-1 font-medium">{label}</div>
               </div>
             ))}
           </div>
@@ -149,23 +157,23 @@ export default function HomePage({ navigate }: HomePageProps) {
       </section>
 
       {/* ===== PROCESS STEPS ===== */}
-      <section className="section-white py-20 lg:py-28">
+      <section className="section-white py-20 lg:py-32">
         <div ref={s1.ref} className={`max-w-7xl mx-auto px-6 lg:px-8 animate-section ${s1.visible ? 'visible' : ''}`}>
           <div className="text-center mb-16">
-            <div className="badge mx-auto mb-4"><Layers className="h-3.5 w-3.5" /><span>How It Works</span></div>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white">A Seamless Learning Process</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-lg mt-4 max-w-2xl mx-auto">From discovery to mastery — our structured approach ensures you build real skills step by step.</p>
+            <div className="badge mx-auto mb-4 font-bold tracking-wider px-4 py-1.5 uppercase"><Layers className="h-4 w-4" /><span>How It Works</span></div>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">A Seamless Learning Process</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-lg mt-5 max-w-2xl mx-auto leading-relaxed">From discovery to mastery — our structured approach ensures you build real skills step by step.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map(({ num, label, title, desc, icon: Icon }, idx) => (
-              <div key={num} className="card relative overflow-hidden group text-center" style={{ transitionDelay: `${idx * 100}ms` }}>
-                <div className="absolute top-4 right-6 text-8xl font-extrabold text-primary-50 dark:text-primary-500/10 select-none pointer-events-none leading-none">{num}</div>
-                <div className="relative z-10 space-y-4">
-                  <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-50 dark:bg-primary-500/10 rounded-2xl group-hover:bg-primary-100 dark:group-hover:bg-primary-500/20 transition-colors">
-                    <Icon className="h-7 w-7 text-primary-600 dark:text-primary-400" />
+              <div key={num} className="card relative overflow-hidden group text-center !p-10 border-slate-100 dark:border-slate-800" style={{ transitionDelay: `${idx * 100}ms` }}>
+                <div className="absolute top-4 right-6 text-8xl font-extrabold text-primary-50 dark:text-primary-500/10 select-none pointer-events-none leading-none opacity-50">{num}</div>
+                <div className="relative z-10 space-y-5">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100/50 dark:bg-primary-500/10 rounded-2xl group-hover:bg-primary-600 group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-xl group-hover:shadow-primary-600/20">
+                    <Icon className="h-8 w-8 text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors" />
                   </div>
-                  <p className="text-xs uppercase tracking-widest text-primary-500 dark:text-primary-400 font-semibold">{label}</p>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
+                  <p className="text-xs uppercase tracking-[0.2em] text-primary-500 dark:text-primary-400 font-bold">{label}</p>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{title}</h3>
                   <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{desc}</p>
                 </div>
               </div>
@@ -175,88 +183,118 @@ export default function HomePage({ navigate }: HomePageProps) {
       </section>
 
       {/* ===== WHAT WE DO ===== */}
-      <section className="section-gray py-20 lg:py-28">
+      <section className="section-gray py-20 lg:py-32">
         <div ref={s2.ref} className={`max-w-7xl mx-auto px-6 lg:px-8 animate-section ${s2.visible ? 'visible' : ''}`}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-6">
-              <div className="badge"><BookOpen className="h-3.5 w-3.5" /><span>What We Do</span></div>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white leading-tight">Empowering Connections in the Digital World</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="space-y-8">
+              <div className="badge font-bold tracking-wider px-4 py-1.5 uppercase"><BookOpen className="h-4 w-4" /><span>What We Do</span></div>
+              <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">Empowering Connections in the Digital World</h2>
               <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">
                 We equip future professionals with the essential tools to thrive in both traditional and digital IT landscapes. With years of experience and countless successful placements, EzzCode has perfected a unique learning process that goes beyond theory.
               </p>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                We delve deep into practical skills and real-world applications, helping students understand, connect, and excel in the ever-evolving tech market.
-              </p>
-              <button onClick={() => navigate('programs')} className="btn-primary mt-2">More About Us <ArrowRight className="h-4 w-4" /></button>
-            </div>
-            <div className="relative">
-              <div className="bg-gradient-to-br from-primary-100 to-purple-100 dark:from-primary-900/30 dark:to-purple-900/30 rounded-3xl p-8 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(99,102,241,0.3) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
-                <div className="relative grid grid-cols-2 gap-4">
-                  {features.map(({ icon: Icon, title }, idx) => (
-                    <div key={idx} className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-lg shadow-primary-100/50 dark:shadow-none hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                      <Icon className="h-8 w-8 text-primary-600 dark:text-primary-400 mb-3" />
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">{title}</h4>
-                    </div>
-                  ))}
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0 w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-500/20 flex items-center justify-center mt-1">
+                    <CheckCircle className="h-4 w-4 text-primary-600 dark:text-primary-400" />
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 font-medium leading-relaxed">Practical skills and real-world applications focused curriculum.</p>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0 w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-500/20 flex items-center justify-center mt-1">
+                    <CheckCircle className="h-4 w-4 text-primary-600 dark:text-primary-400" />
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 font-medium leading-relaxed">Strong emphasis on collaborative learning and mentorship.</p>
                 </div>
               </div>
+              <button onClick={() => navigate('contact')} className="btn-primary !px-8 !py-3.5 mt-2">More About Us <ArrowRight className="h-4 w-4" /></button>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-primary-600 to-indigo-800 dark:from-slate-800 dark:to-indigo-950 rounded-[2.5rem] p-1 shadow-2xl overflow-hidden group">
+                <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+                <div className="relative bg-white/5 backdrop-blur-3xl rounded-[2.3rem] p-8 md:p-12">
+                  <div className="grid grid-cols-2 gap-6">
+                    {features.map(({ icon: Icon, title }, idx) => (
+                      <div key={idx} className="bg-white dark:bg-slate-800/80 rounded-2xl p-6 shadow-xl shadow-black/5 dark:shadow-none hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                        <div className="w-12 h-12 bg-primary-50 dark:bg-primary-500/10 rounded-xl flex items-center justify-center mb-4">
+                          <Icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+                        </div>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-tight uppercase tracking-wide">{title}</h4>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-primary-400/20 blur-3xl animate-pulse rounded-full" />
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-purple-400/20 blur-3xl animate-pulse rounded-full" />
             </div>
           </div>
         </div>
       </section>
 
       {/* ===== PROGRAMS ===== */}
-      <section className="section-white py-20 lg:py-28">
+      <section className="section-white py-20 lg:py-32">
         <div ref={s3.ref} className={`max-w-7xl mx-auto px-6 lg:px-8 animate-section ${s3.visible ? 'visible' : ''}`}>
           <div className="text-center mb-16">
-            <div className="badge mx-auto mb-4"><Code className="h-3.5 w-3.5" /><span>Our Programs</span></div>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Featured Programs</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto">Choose from our industry-leading training programs designed to turn beginners into job-ready professionals.</p>
+            <div className="badge mx-auto mb-4 font-bold tracking-wider px-4 py-1.5 uppercase"><Code className="h-4 w-4" /><span>Featured Programs</span></div>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">Our Core Offerings</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">Choose from our industry-leading training programs designed to turn beginners into job-ready professionals.</p>
           </div>
           {loading ? (
-            <div className="text-center py-12"><div className="w-12 h-12 border-[3px] border-slate-200 dark:border-slate-700 border-t-primary-600 rounded-full animate-spin mx-auto" /></div>
+            <div className="text-center py-20"><div className="w-16 h-16 border-[3px] border-slate-100 dark:border-slate-800 border-t-primary-600 rounded-full animate-spin mx-auto" /></div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {programs.map((program, idx) => (
-                <div key={program.id} className="card cursor-pointer group" style={{ transitionDelay: `${idx * 60}ms` }} onClick={() => navigate('programs')}>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="badge text-xs">{program.category}</span>
-                    <span className="text-slate-400 dark:text-slate-500 text-xs flex items-center gap-1"><BookOpen className="h-3.5 w-3.5" />{program.duration}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {programs.map((program, idx) => {
+                const accentClass = CATEGORY_STYLES[program.category] || 'from-primary-600 to-primary-700';
+                return (
+                  <div key={program.id}
+                    className="card flex flex-col group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary-500/10 !p-8"
+                    style={{ transitionDelay: `${idx * 60}ms` }}
+                    onClick={() => {
+                      const categorySlug = program.category.toLowerCase().replace(/\s+/g, '-');
+                      navigate(`program-${categorySlug}` as Page);
+                    }}
+                  >
+                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${accentClass} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="badge text-[10px] font-bold tracking-widest uppercase py-1 px-3 bg-slate-100 dark:bg-slate-800 border-transparent">{program.category}</span>
+                      <span className="text-slate-400 dark:text-slate-500 text-xs font-medium flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{program.duration}</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors tracking-tight leading-tight">{program.title}</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-6 leading-relaxed">{program.description}</p>
+                    <div className="flex flex-wrap gap-2 pt-5 border-t border-slate-100 dark:border-slate-800 mt-auto">
+                      {program.skills.slice(0, 3).map((skill, i) => (
+                        <span key={i} className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 px-3 py-1 rounded-lg text-[10px] font-bold border border-slate-100 dark:border-slate-700 uppercase tracking-wider">{skill}</span>
+                      ))}
+                      {program.skills.length > 3 && <span className="text-slate-300 dark:text-slate-600 text-[10px] font-bold py-1 mb-0.5 ml-1 flex items-center">+{program.skills.length - 3} MORE</span>}
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{program.title}</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-4">{program.description}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {program.skills.slice(0, 3).map((skill, i) => (
-                      <span key={i} className="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-lg text-xs border border-slate-100 dark:border-slate-700">{skill}</span>
-                    ))}
-                    {program.skills.length > 3 && <span className="text-slate-400 text-xs self-center">+{program.skills.length - 3}</span>}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
-          <div className="text-center mt-12">
-            <button onClick={() => navigate('programs')} className="btn-secondary">View All Programs <ArrowRight className="h-4 w-4" /></button>
+          <div className="text-center mt-16">
+            <button onClick={() => navigate('program-web-development')} className="group flex items-center justify-center gap-2 mx-auto text-primary-600 dark:text-primary-400 font-bold hover:gap-3 transition-all duration-300">
+              View Our Categories <ChevronRight className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </section>
 
       {/* ===== WHY CHOOSE ===== */}
-      <section className="section-gray py-20 lg:py-28">
+      <section className="section-gray py-20 lg:py-32">
         <div ref={s4.ref} className={`max-w-7xl mx-auto px-6 lg:px-8 animate-section ${s4.visible ? 'visible' : ''}`}>
           <div className="text-center mb-16">
-            <div className="badge mx-auto mb-4"><Star className="h-3.5 w-3.5" /><span>Why EzzCode</span></div>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Why Choose EzzCode?</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-lg">Everything you need to succeed in the tech industry</p>
+            <div className="badge mx-auto mb-4 font-bold tracking-wider px-4 py-1.5 uppercase"><Star className="h-4 w-4" /><span>Why EzzCode</span></div>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight text-center">Fueling Your Career Journey</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-lg">Everything you need to succeed in the tech industry.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map(({ icon: Icon, title, desc }, idx) => (
-              <div key={idx} className="card text-center group" style={{ transitionDelay: `${idx * 80}ms` }}>
-                <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-50 dark:bg-primary-500/10 rounded-2xl mb-5 group-hover:bg-primary-100 dark:group-hover:bg-primary-500/20 transition-colors">
-                  <Icon className="h-7 w-7 text-primary-600 dark:text-primary-400" />
+              <div key={idx} className="card !p-10 text-center group border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300" style={{ transitionDelay: `${idx * 80}ms` }}>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-white dark:bg-slate-800 rounded-3xl mb-6 shadow-md shadow-primary-500/5 group-hover:bg-primary-600 transition-all duration-300 group-hover:shadow-primary-600/20 group-hover:-translate-y-1">
+                  <Icon className="h-8 w-8 text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{title}</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 tracking-tight">{title}</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
@@ -265,27 +303,29 @@ export default function HomePage({ navigate }: HomePageProps) {
       </section>
 
       {/* ===== TESTIMONIALS ===== */}
-      <section className="section-white py-20 lg:py-28">
+      <section className="section-white py-20 lg:py-32">
         <div ref={s5.ref} className={`max-w-7xl mx-auto px-6 lg:px-8 animate-section ${s5.visible ? 'visible' : ''}`}>
-          <div className="text-center mb-16">
-            <div className="badge mx-auto mb-4"><Quote className="h-3.5 w-3.5" /><span>Alumni</span></div>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">What Our Students Say</h2>
+          <div className="text-center mb-20 whitespace-normal">
+            <div className="badge mx-auto mb-4 font-bold tracking-wider px-4 py-1.5 uppercase"><Quote className="h-4 w-4" /><span>Alumni</span></div>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">Voices of Our Community</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="card relative" style={{ transitionDelay: `${idx * 100}ms` }}>
-                <Quote className="h-10 w-10 text-primary-100 dark:text-primary-500/20 absolute top-6 right-6" />
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
-                </div>
-                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-6 italic">"{t.text}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-700">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-bold text-sm">
-                    {t.name.charAt(0)}
+              <div key={idx} className="card relative !p-10 !border-slate-100 dark:!border-slate-800 hover:shadow-2xl transition-all duration-500 group" style={{ transitionDelay: `${idx * 100}ms` }}>
+                <Quote className="h-12 w-12 text-slate-100 dark:text-slate-800 absolute top-8 right-8 z-0 group-hover:text-primary-50 dark:group-hover:text-primary-950/20 transition-colors" />
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="flex items-center gap-1 mb-8">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
                   </div>
-                  <div>
-                    <p className="font-semibold text-slate-900 dark:text-white text-sm">{t.name}</p>
-                    <p className="text-primary-500 dark:text-primary-400 text-xs">{t.role}</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[15px] leading-relaxed mb-10 italic font-medium whitespace-normal break-words">"{t.text}"</p>
+                  <div className="flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800 mt-auto">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-400 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-lg shadow-primary-500/20">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 dark:text-white text-[15px] tracking-tight">{t.name}</p>
+                      <p className="text-primary-600 dark:text-primary-400 text-[11px] font-bold uppercase tracking-widest mt-0.5">{t.role}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -295,20 +335,26 @@ export default function HomePage({ navigate }: HomePageProps) {
       </section>
 
       {/* ===== CTA BANNER ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 py-20 lg:py-24">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0)', backgroundSize: '30px 30px' }} />
-        <div className="absolute top-10 -right-20 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-indigo-800 py-24 lg:py-32">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[100px] pointer-events-none" />
+
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Ready to Start Your Tech Career?</h2>
-          <p className="text-primary-200 text-lg mb-10 max-w-2xl mx-auto">
-            Join hundreds of students who have transformed their careers with EzzCode. Get hands-on experience, mentorship, and verifiable certificates.
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white mb-8 tracking-tight">Build Proof of Your Skills</h2>
+          <p className="text-white/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+            Join hundreds of students who have transformed their careers with EzzCode. Get hands-on experience, expert mentorship, and industry-standard training.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={() => navigate('programs')} className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary-700 rounded-2xl font-bold text-lg transition-all hover:shadow-xl hover:-translate-y-0.5">
-              Get Started Now <ArrowRight className="h-5 w-5" />
+          <div className="flex flex-col sm:flex-row gap-5 justify-center">
+            <button onClick={() => navigate('program-web-development')}
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-primary-700 rounded-2xl font-bold text-lg shadow-2xl shadow-black/10 transition-all hover:-translate-y-1 hover:shadow-white/20 active:translate-y-0"
+            >
+              Start Learning Now <ArrowRight className="h-5 w-5" />
             </button>
-            <button onClick={() => navigate('contact')} className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white/30 text-white rounded-2xl font-semibold text-lg transition-all hover:bg-white/10">
-              Contact Us
+            <button onClick={() => navigate('contact')}
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl font-bold text-lg transition-all hover:bg-white/20 hover:border-white/30"
+            >
+              Talk to Our Team
             </button>
           </div>
         </div>

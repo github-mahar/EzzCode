@@ -21,11 +21,31 @@
     color: #334155;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    cursor: none;
+    /* Hide default cursor */
   }
 
   .dark body {
     background-color: #0F172A;
     color: #CBD5E1;
+  }
+
+  /* Prevent cursor being hidden on mobile/touch */
+  @media (hover: none) and (pointer: coarse) {
+    body {
+      cursor: auto;
+    }
+  }
+
+  a,
+  button,
+  [role="button"] {
+    cursor: none;
+    /* Hide default cursor on interactive elements too */
+  }
+
+  .text-glow-hover:hover {
+    text-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
   }
 
   ::selection {
