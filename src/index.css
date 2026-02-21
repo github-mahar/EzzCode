@@ -1,3 +1,162 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #0A0F1C;
+    color: #94A3B8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: rgba(0, 230, 118, 0.3);
+    color: #ffffff;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0A0F1C;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E293B;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Card */
+  .glass-card {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    transition: all 0.4s ease;
+  }
+  .glass-card:hover {
+    border-color: rgba(0, 230, 118, 0.3);
+    box-shadow: 0 8px 40px rgba(0, 230, 118, 0.1);
+    transform: translateY(-4px);
+  }
+
+  /* Glass Nav */
+  .glass-nav {
+    background: rgba(10, 15, 28, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Primary Button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-accent-green text-base-dark rounded-full font-semibold transition-all duration-300;
+    box-shadow: 0 0 0 rgba(0, 230, 118, 0);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(0, 230, 118, 0.4);
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-white rounded-full font-semibold transition-all duration-300;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+  }
+  .btn-secondary:hover {
+    border-color: #00E676;
+    color: #00E676;
+  }
+
+  /* Gradient CTA Button */
+  .btn-gradient {
+    @apply inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full font-bold text-base-dark transition-all duration-300;
+    background: linear-gradient(135deg, #00E676, #3B82F6);
+  }
+  .btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 230, 118, 0.3);
+  }
+
+  /* Section animate-on-scroll */
+  .animate-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .animate-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Dot grid background */
+  .dot-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
+    background-size: 30px 30px;
+  }
+
+  /* Green text glow */
+  .text-glow-green {
+    text-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+  }
+
+  /* Form inputs dark */
+  .input-dark {
+    @apply w-full px-4 py-3.5 bg-surface-dark border border-white/10 rounded-xl text-white placeholder-slate-500 transition-all duration-300;
+  }
+  .input-dark:focus {
+    @apply outline-none border-accent-green;
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.15);
+  }
+
+  /* Step number watermark */
+  .step-number {
+    @apply absolute -top-2 -right-2 text-7xl font-extrabold leading-none select-none pointer-events-none;
+    color: rgba(0, 230, 118, 0.08);
+  }
+
+  /* Gradient top line */
+  .gradient-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00E676, #3B82F6, transparent);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-section {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

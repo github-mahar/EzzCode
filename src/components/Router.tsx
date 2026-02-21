@@ -38,7 +38,7 @@ export default function Router() {
   const renderPage = () => {
     const LoadingFallback = () => (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="w-12 h-12 border-[3px] border-white/10 border-t-accent-green rounded-full animate-spin"></div>
       </div>
     );
 
@@ -81,7 +81,7 @@ export default function Router() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-base-dark">
       <Header currentPage={currentPage} navigate={navigate} />
       <main className="flex-grow">
         {renderPage()}

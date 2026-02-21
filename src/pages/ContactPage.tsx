@@ -1,91 +1,49 @@
-import { useState, useEffect } from 'react';
-import { Mail, Send, CheckCircle, FileText, X, Phone, BookOpen } from 'lucide-react';
-import { supabase, Contact, Program } from '../lib/supabase';
+import { useState, useEffect, useRef } from 'react';
+import { Send, Mail, Phone, MapPin, Upload, X, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import { supabase, Program } from '../lib/supabase';
+
+function useScrollReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); io.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return { ref, visible };
+}
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState<Contact>({
-    name: '',
-    email: '',
-    message: '',
-    resume_url: undefined,
-    whatsapp_number: '+1',
-    program_id: '',
-  });
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [programs, setPrograms] = useState<Program[]>([]);
-  const [loadingPrograms, setLoadingPrograms] = useState(true);
+  const [formData, setFormData] = useState({ name: '', email: '', whatsapp: '', program_id: '', message: '' });
+  const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const s1 = useScrollReveal();
 
   useEffect(() => {
-    fetchPrograms();
+    supabase.from('programs').select('*').eq('status', 'active').then(({ data }) => {
+      if (data) setPrograms(data);
+    });
   }, []);
 
-  const fetchPrograms = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('programs')
-        .select('*')
-        .eq('status', 'active')
-        .order('title', { ascending: true });
-
-      if (error) throw error;
-      setPrograms(data || []);
-    } catch (error) {
-      console.error('Error fetching programs:', error);
-    } finally {
-      setLoadingPrograms(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    // Clear error when user starts typing
-    if (error) setError('');
-
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (error) setError('');
-
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (error) setError('');
-
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type (PDF only)
-      if (file.type !== 'application/pdf') {
-        setError('Please upload a PDF file only');
-        e.target.value = '';
-        return;
-      }
-
-      // Validate file size (max 2MB)
-      const maxSize = 2 * 1024 * 1024; // 2MB
-      if (file.size > maxSize) {
-        setError('File size must be less than 2MB');
-        e.target.value = '';
-        return;
-      }
-
-      setResumeFile(file);
-    }
-  };
-
-  const removeFile = () => {
-    setResumeFile(null);
-    const fileInput = document.getElementById('resume') as HTMLInputElement;
-    if (fileInput) fileInput.value = '';
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.type !== 'application/pdf') { setError('Please upload a PDF file only'); return; }
+    if (f.size > 2 * 1024 * 1024) { setError('File must be under 2MB'); return; }
+    setFile(f);
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,127 +52,42 @@ export default function ContactPage() {
     setError('');
     setSuccess(false);
 
-    // Validate required fields
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim() || !formData.whatsapp_number.trim() || !formData.program_id) {
+    // Validation
+    if (!formData.name || !formData.email || !formData.whatsapp || !formData.program_id || !formData.message) {
       setError('Please fill in all required fields');
       setLoading(false);
       return;
     }
-
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      setLoading(false);
-      return;
-    }
-
-    // Validate WhatsApp number format (required and must be valid)
-    const phoneRegex = /^[+]?[0-9]{1,4}[-\s]?[(]?[0-9]{1,4}[)]?[-\s]?[0-9]{1,9}$/;
-    if (!phoneRegex.test(formData.whatsapp_number.trim())) {
-      setError('Please enter a valid WhatsApp number (e.g., +1 234 567 8900)');
-      setLoading(false);
-      return;
-    }
-
-    // Validate program selection
-    if (!formData.program_id || formData.program_id === '') {
-      setError('Please select a program you are interested in');
-      setLoading(false);
-      return;
-    }
+    if (!emailRegex.test(formData.email)) { setError('Please enter a valid email address'); setLoading(false); return; }
+    const phoneRegex = /^\+?[\d\s-]{10,}$/;
+    if (!phoneRegex.test(formData.whatsapp)) { setError('Please enter a valid WhatsApp number'); setLoading(false); return; }
 
     try {
-      let resumeUrl: string | undefined = undefined;
-
-      // Upload resume file if provided
-      if (resumeFile) {
-        // Sanitize full name - remove special characters, keep spaces or convert to underscores
-        const sanitizedName = formData.name
-          .trim()
-          .replace(/[^a-zA-Z0-9\s\-_]/g, '') // Remove special chars except spaces, hyphens, underscores
-          .replace(/\s+/g, '_') // Replace spaces with underscores
-          .replace(/_+/g, '_') // Replace multiple underscores with single
-          .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
-
-        // Add timestamp to avoid duplicates if same person uploads multiple times
-        const timestamp = Date.now();
-
-        // Use full name as filename: "FullName_timestamp.pdf"
-        const fileName = `${sanitizedName}_${timestamp}.pdf`;
-        const filePath = `resumes/${fileName}`;
-
-        console.log('Uploading file:', { fileName, filePath, size: resumeFile.size });
-
-        // Upload file to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('contacts')
-          .upload(filePath, resumeFile, {
-            cacheControl: '3600',
-            upsert: false,
-            contentType: 'application/pdf'
-          });
-
-        if (uploadError) {
-          console.error('Upload error details:', uploadError);
-
-          // Provide more specific error messages
-          if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('The resource was not found')) {
-            throw new Error('Storage bucket not configured. Please create a "contacts" bucket in Supabase Storage.');
-          } else if (uploadError.message.includes('new row violates row-level security policy')) {
-            throw new Error('Storage access denied. Please configure storage policies to allow public uploads.');
-          } else if (uploadError.message.includes('duplicate')) {
-            throw new Error('A file with this name already exists. Please try again.');
-          } else {
-            throw new Error(`Failed to upload resume: ${uploadError.message}`);
-          }
-        }
-
-        if (!uploadData) {
-          throw new Error('Upload failed: No data returned from storage');
-        }
-
-        console.log('Upload successful:', uploadData);
-
-        // Get public URL
-        const { data: urlData } = supabase.storage
-          .from('contacts')
-          .getPublicUrl(filePath);
-
-        if (!urlData?.publicUrl) {
-          throw new Error('Failed to get public URL for uploaded file');
-        }
-
-        resumeUrl = urlData.publicUrl;
-        console.log('Resume URL:', resumeUrl);
+      let resume_url = null;
+      if (file) {
+        const fileName = `resumes/${formData.name}_${Date.now()}.pdf`;
+        const { error: uploadError } = await supabase.storage.from('contacts').upload(fileName, file);
+        if (uploadError) throw uploadError;
+        const { data: urlData } = supabase.storage.from('contacts').getPublicUrl(fileName);
+        resume_url = urlData.publicUrl;
       }
 
-      // Insert contact data with all fields
-      const contactData = {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        message: formData.message.trim(),
-        resume_url: resumeUrl || null,
-        whatsapp_number: formData.whatsapp_number.trim(),
-        program_id: formData.program_id,
-      };
+      const { error: insertError } = await supabase.from('contacts').insert([{
+        name: formData.name,
+        email: formData.email,
+        whatsapp_number: formData.whatsapp,
+        program_id: parseInt(formData.program_id),
+        message: formData.message,
+        resume_url,
+      }]);
 
-      const { error } = await supabase.from('contacts').insert([contactData]);
-
-      if (error) throw error;
-
+      if (insertError) throw insertError;
       setSuccess(true);
-      setFormData({ name: '', email: '', message: '', resume_url: undefined, whatsapp_number: '+1', program_id: '' });
-      setResumeFile(null);
-      const fileInput = document.getElementById('resume') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
-
-      setTimeout(() => {
-        setSuccess(false);
-      }, 5000);
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      setError(err instanceof Error ? err.message : 'Failed to submit your message. Please try again.');
+      setFormData({ name: '', email: '', whatsapp: '', program_id: '', message: '' });
+      setFile(null);
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -222,282 +95,120 @@ export default function ContactPage() {
 
   return (
     <div>
-      <section className="bg-gradient-to-br from-blue-900 to-blue-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Get In Touch</h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Have questions about our programs? We're here to help you start your tech journey.
-            </p>
-          </div>
+      {/* Hero */}
+      <section className="relative py-20 md:py-28 bg-hero-gradient overflow-hidden">
+        <div className="absolute inset-0 dot-grid" />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
+          <p className="text-accent-green text-sm font-semibold uppercase tracking-widest mb-4">Get In Touch</p>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4">Contact Us</h1>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">Have questions or ready to join? Reach out and we'll get back to you within 24 hours.</p>
         </div>
       </section>
 
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Contact Section */}
+      <section className="py-16 lg:py-20 bg-base-dark">
+        <div ref={s1.ref} className={`max-w-7xl mx-auto px-6 lg:px-8 animate-section ${s1.visible ? 'visible' : ''}`}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Sidebar with Contact Info */}
-            <div className="lg:col-span-1 space-y-6">
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Mail className="h-6 w-6 text-blue-600" />
-                    </div>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {[
+                { icon: Mail, label: 'Email', value: 'info@ezzcode.com', href: 'mailto:info@ezzcode.com' },
+                { icon: Phone, label: 'Phone', value: '+92 300 1234567', href: 'tel:+923001234567' },
+                { icon: MapPin, label: 'Location', value: 'Rawalpindi, Pakistan', href: '#' },
+              ].map(({ icon: Icon, label, value, href }) => (
+                <a key={label} href={href} className="glass-card p-5 flex items-center gap-4 group">
+                  <div className="w-12 h-12 bg-accent-green/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-accent-green/20 transition-colors">
+                    <Icon className="h-6 w-6 text-accent-green" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Email Us</h3>
-                    <p className="text-gray-600">info@ezzcode.com</p>
-                    <p className="text-gray-600">support@ezzcode.com</p>
+                    <p className="text-slate-500 text-xs uppercase tracking-wider">{label}</p>
+                    <p className="text-white font-medium text-sm">{value}</p>
                   </div>
+                </a>
+              ))}
+
+              <div className="glass-card p-5">
+                <div className="flex items-center gap-2 text-accent-green mb-2">
+                  <CheckCircle className="h-5 w-5" />
+                  <span className="font-semibold text-sm">Quick Response</span>
                 </div>
-              </div>
-
-
-
-              <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-md p-6 text-white">
-                <h3 className="font-semibold mb-3">Quick Response</h3>
-                <p className="text-blue-100 text-sm">
-                  We typically respond to all inquiries within 24 hours during business days.
-                </p>
+                <p className="text-slate-400 text-sm">We typically respond within 24 hours on business days.</p>
               </div>
             </div>
 
-            {/* Main Content - Contact Form */}
+            {/* Form */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
-
+              <div className="glass-card p-8">
+                {/* Success message */}
                 {success && (
-                  <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
-                    <CheckCircle className="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div className="mb-6 flex items-start gap-3 bg-green-950/50 border border-green-600/30 text-green-400 p-5 rounded-xl">
+                    <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
                     <div>
-                      <h3 className="font-semibold text-green-900">Message Sent Successfully!</h3>
-                      <p className="text-green-700 mt-1">
-                        Thank you for reaching out. We'll get back to you soon.
-                      </p>
+                      <p className="font-semibold">Message sent successfully!</p>
+                      <p className="text-sm text-green-400/70 mt-1">We'll get back to you within 24 hours.</p>
                     </div>
                   </div>
                 )}
 
+                {/* Error */}
                 {error && (
-                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-red-700">{error}</p>
+                  <div className="mb-6 flex items-start gap-3 bg-red-950/50 border border-red-600/30 text-red-400 p-5 rounded-xl">
+                    <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm">{error}</p>
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="John Doe"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="whatsapp_number" className="block text-sm font-medium text-gray-700 mb-2">
-                      WhatsApp Number <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex gap-2">
-                      <div className="relative w-32">
-                        <select
-                          id="country_code"
-                          name="country_code"
-                          value={formData.whatsapp_number.split(' ')[0] || '+1'}
-                          onChange={(e) => {
-                            const code = e.target.value;
-                            const number = formData.whatsapp_number.split(' ').slice(1).join(' ');
-                            setFormData({ ...formData, whatsapp_number: `${code} ${number}`.trim() });
-                          }}
-                          className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                        >
-                          <option value="+1">🇺🇸 +1</option>
-                          <option value="+44">🇬🇧 +44</option>
-                          <option value="+91">🇮🇳 +91</option>
-                          <option value="+92">🇵🇰 +92</option>
-                          <option value="+86">🇨🇳 +86</option>
-                          <option value="+81">🇯🇵 +81</option>
-                          <option value="+82">🇰🇷 +82</option>
-                          <option value="+49">🇩🇪 +49</option>
-                          <option value="+33">🇫🇷 +33</option>
-                          <option value="+39">🇮🇹 +39</option>
-                          <option value="+34">🇪🇸 +34</option>
-                          <option value="+7">🇷🇺 +7</option>
-                          <option value="+61">🇦🇺 +61</option>
-                          <option value="+64">🇳🇿 +64</option>
-                          <option value="+27">🇿🇦 +27</option>
-                          <option value="+234">🇳🇬 +234</option>
-                          <option value="+254">🇰🇪 +254</option>
-                          <option value="+20">🇪🇬 +20</option>
-                          <option value="+971">🇦🇪 +971</option>
-                          <option value="+966">🇸🇦 +966</option>
-                          <option value="+55">🇧🇷 +55</option>
-                          <option value="+52">🇲🇽 +52</option>
-                          <option value="+54">🇦🇷 +54</option>
-                          <option value="+62">🇮🇩 +62</option>
-                          <option value="+60">🇲🇾 +60</option>
-                          <option value="+65">🇸🇬 +65</option>
-                          <option value="+66">🇹🇭 +66</option>
-                          <option value="+84">🇻🇳 +84</option>
-                          <option value="+63">🇵🇭 +63</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-                          <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="relative flex-1">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <Phone className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <input
-                          type="tel"
-                          id="whatsapp_number"
-                          name="whatsapp_number"
-                          value={formData.whatsapp_number.split(' ').slice(1).join(' ')}
-                          onChange={(e) => {
-                            const code = formData.whatsapp_number.split(' ')[0] || '+1';
-                            setFormData({ ...formData, whatsapp_number: `${code} ${e.target.value}`.trim() });
-                          }}
-                          required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="234 567 8900"
-                        />
-                      </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">Full Name <span className="text-accent-green">*</span></label>
+                      <input id="name" name="name" type="text" value={formData.name} onChange={handleChange} placeholder="Your name" className="input-dark" required />
                     </div>
-                    <p className="mt-1 text-xs text-gray-500">Select your country code and enter your phone number</p>
-                  </div>
-
-                  <div>
-                    <label htmlFor="program_id" className="block text-sm font-medium text-gray-700 mb-2">
-                      Interested Program <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <BookOpen className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <select
-                        id="program_id"
-                        name="program_id"
-                        value={formData.program_id}
-                        onChange={handleSelectChange}
-                        required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                        disabled={loadingPrograms}
-                      >
-                        <option value="">Select a program...</option>
-                        {programs.map((program) => (
-                          <option key={program.id} value={program.id}>
-                            {program.title}
-                          </option>
-                        ))}
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">Email <span className="text-accent-green">*</span></label>
+                      <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" className="input-dark" required />
+                    </div>
+                    <div>
+                      <label htmlFor="whatsapp" className="block text-sm font-medium text-slate-300 mb-2">WhatsApp <span className="text-accent-green">*</span></label>
+                      <input id="whatsapp" name="whatsapp" type="tel" value={formData.whatsapp} onChange={handleChange} placeholder="+92 300 1234567" className="input-dark" required />
+                    </div>
+                    <div>
+                      <label htmlFor="program_id" className="block text-sm font-medium text-slate-300 mb-2">Program <span className="text-accent-green">*</span></label>
+                      <select id="program_id" name="program_id" value={formData.program_id} onChange={handleChange} className="input-dark" required>
+                        <option value="">Select a program</option>
+                        {programs.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
                       </select>
-                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
                     </div>
-                    {loadingPrograms && (
-                      <p className="mt-1 text-xs text-gray-500">Loading programs...</p>
+                  </div>
+
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">Message <span className="text-accent-green">*</span></label>
+                    <textarea id="message" name="message" rows={4} value={formData.message} onChange={handleChange} placeholder="Tell us about yourself and what you're looking for..." className="input-dark resize-none" required />
+                  </div>
+
+                  {/* File Upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Resume (Optional)</label>
+                    {file ? (
+                      <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4">
+                        <FileText className="h-5 w-5 text-accent-green flex-shrink-0" />
+                        <span className="text-white text-sm truncate flex-1">{file.name}</span>
+                        <button type="button" onClick={() => setFile(null)} className="text-slate-500 hover:text-red-400 transition-colors">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-white/10 hover:border-accent-green/30 rounded-xl cursor-pointer transition-colors group">
+                        <Upload className="h-8 w-8 text-slate-600 group-hover:text-accent-green/60 transition-colors mb-2" />
+                        <span className="text-slate-500 text-sm">Click to upload PDF (max 2MB)</span>
+                        <input type="file" accept=".pdf" onChange={handleFileChange} className="hidden" />
+                      </label>
                     )}
                   </div>
 
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      Message <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                      placeholder="Tell us about your interest in our programs..."
-                    ></textarea>
-                  </div>
-
-                  <div>
-                    <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
-                      Resume/CV <span className="text-gray-500 text-xs">(PDF only, Max 2MB)</span>
-                    </label>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <label
-                          htmlFor="resume"
-                          className="flex-1 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
-                        >
-                          <FileText className="h-5 w-5 text-gray-400" />
-                          <span className="text-sm text-gray-600">
-                            {resumeFile ? resumeFile.name : 'Choose PDF file or drag and drop'}
-                          </span>
-                        </label>
-                        <input
-                          type="file"
-                          id="resume"
-                          name="resume"
-                          accept=".pdf,application/pdf"
-                          onChange={handleFileChange}
-                          className="hidden"
-                        />
-                        {resumeFile && (
-                          <button
-                            type="button"
-                            onClick={removeFile}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            aria-label="Remove file"
-                          >
-                            <X className="h-5 w-5" />
-                          </button>
-                        )}
-                      </div>
-                      {resumeFile && (
-                        <div className="text-xs text-gray-500 flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          <span>{(resumeFile.size / 1024 / 1024).toFixed(2)} MB</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
+                  <button type="submit" disabled={loading} className="btn-primary w-full !py-4 text-base disabled:opacity-50">
                     {loading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        Sending...
-                      </>
+                      <div className="w-5 h-5 border-2 border-base-dark/30 border-t-base-dark rounded-full animate-spin" />
                     ) : (
                       <>
                         <Send className="h-5 w-5" />
