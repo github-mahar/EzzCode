@@ -642,7 +642,7 @@ Subtle animated dots or particles in the hero section:
 - Include a top contact bar on desktop
 - Add green glow effects (`box-shadow`) on hover for buttons and cards
 
-### DON'T ❌
+ ### DON'T ❌
 - Don't use a light/white primary background (dark-first design)
 - Don't use square-cornered buttons (always `rounded-full` or `rounded-xl`)
 - Don't skip animations — every section should animate on scroll entry

@@ -122,54 +122,64 @@ async function drawCertificate(cert: Certificate): Promise<HTMLCanvasElement> {
   ctx.fillStyle = '#0F172A';
   ctx.fillText('Certificate of Completion', CX, 328);
 
-  // Awarded to
+  // "It is to be certified that"
   ctx.font = 'italic 22px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#94A3B8';
-  ctx.fillText('Awarded to', CX, 400);
+  ctx.fillText('It is to be certified that', CX, 390);
 
   // Student name
   ctx.font = 'bold 46px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#312E81';
-  ctx.fillText(cert.student_name, CX, 462);
+  ctx.fillText(cert.student_name, CX, 450);
 
-  // For completing
+  // "completed {program} internship at EzzCode"
   ctx.font = 'italic 22px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#94A3B8';
-  ctx.fillText('For completing', CX, 530);
+  ctx.fillText('completed', CX, 500);
 
   // Program name
   ctx.font = 'bold 40px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#0F172A';
-  ctx.fillText(cert.program_name, CX, 590);
+  ctx.fillText(cert.program_name, CX, 550);
+
+  // "internship at EzzCode"
+  ctx.font = 'italic 22px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#94A3B8';
+  ctx.fillText('internship at EzzCode', CX, 590);
+
+  // Verification URL
+  ctx.font = '500 16px Inter, system-ui, sans-serif';
+  ctx.fillStyle = '#3B82F6';
+  ctx.fillText('Verify certificate at https://ezzcode.online/#certificate', CX, 630);
 
   // Divider line
   ctx.strokeStyle = '#E2E8F0';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(IN + 60, 660);
-  ctx.lineTo(W - IN - 60, 660);
+  ctx.moveTo(IN + 60, 670);
+  ctx.lineTo(W - IN - 60, 670);
   ctx.stroke();
 
   // Certificate ID (left)
   ctx.textAlign = 'left';
   ctx.font = '600 14px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#94A3B8';
-  ctx.fillText('CERTIFICATE ID', IN + 80, 720);
+  ctx.fillText('CERTIFICATE ID', IN + 80, 730);
   ctx.font = 'bold 20px "JetBrains Mono", "Courier New", monospace';
   ctx.fillStyle = '#059669';
-  ctx.fillText(cert.certificate_id, IN + 80, 754);
+  ctx.fillText(cert.certificate_id, IN + 80, 764);
 
   // Issue Date (right)
   ctx.textAlign = 'right';
   ctx.font = '600 14px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#94A3B8';
-  ctx.fillText('ISSUE DATE', W - IN - 80, 720);
+  ctx.fillText('ISSUE DATE', W - IN - 80, 730);
   const dateStr = new Date(cert.issue_date).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
   ctx.font = '600 20px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#0F172A';
-  ctx.fillText(dateStr, W - IN - 80, 754);
+  ctx.fillText(dateStr, W - IN - 80, 764);
 
   // ── Wax seal stamp image (bottom-right) ──
   try {
@@ -224,6 +234,23 @@ export default function CertificatePage() {
       const pdfH = (canvas.height / canvas.width) * pdfW;
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [pdfW, pdfH] });
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+
+      // Make the verification URL clickable in the PDF
+      // Canvas coords: text centered at (700, 630), font 16px, ~500px wide
+      const scale = pdfW / 1400;
+      const linkW = 480 * scale;   // approximate text width
+      const linkH = 20 * scale;    // approximate text height
+      const linkX = (700 * scale) - linkW / 2;
+      const linkY = (630 * scale) - linkH + 2;
+      pdf.link(linkX, linkY, linkW, linkH, { url: 'https://ezzcode.online/#certificate' });
+
+      // Make the bottom branding URL clickable too
+      const brandW = 200 * scale;
+      const brandH = 16 * scale;
+      const brandX = (700 * scale) - brandW / 2;
+      const brandY = ((1000 - 52) * scale) - brandH + 2;
+      pdf.link(brandX, brandY, brandW, brandH, { url: 'https://www.ezzcode.online' });
+
       pdf.save(`${certificate.certificate_id}.pdf`);
     } catch (err) {
       console.error('Download failed:', err);
@@ -286,13 +313,15 @@ export default function CertificatePage() {
                 <img src={logoSrc} alt="EzzCode Logo" className="w-14 h-14 mx-auto" />
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Certificate of Completion</h3>
                 <div className="space-y-1">
-                  <p className="text-slate-400 dark:text-slate-500 text-sm italic">Awarded to</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm italic">It is to be certified that</p>
                   <p className="text-xl font-bold gradient-text">{certificate.student_name}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-slate-400 dark:text-slate-500 text-sm italic">For completing</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm italic">completed</p>
                   <p className="text-xl font-bold text-slate-900 dark:text-white">{certificate.program_name}</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm italic">internship at EzzCode</p>
                 </div>
+                <p className="text-primary-500 dark:text-primary-400 text-xs mt-2">Verify certificate at <a href="https://ezzcode.online/#certificate" className="underline hover:text-primary-600 dark:hover:text-primary-300 transition-colors">ezzcode.online/#certificate</a></p>
                 <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200 dark:border-slate-700 max-w-sm mx-auto">
                   <div>
                     <p className="text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wider mb-1">Certificate ID</p>

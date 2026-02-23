@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, Mail, Upload, X, CheckCircle, AlertCircle, FileText, MessageSquare, ChevronDown } from 'lucide-react';
+import { Send, Mail, Upload, X, CheckCircle, AlertCircle, FileText, MessageSquare, ChevronDown, Clock } from 'lucide-react';
 import { supabase, Program } from '../lib/supabase';
 
 const COUNTRY_CODES = [
@@ -76,7 +76,15 @@ export default function ContactPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [programs, setPrograms] = useState<Program[]>([]);
+  const [toast, setToast] = useState<string | null>(null);
   const s1 = useScrollReveal();
+
+  // Auto-dismiss toast after 8 seconds
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 8000);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   useEffect(() => {
     supabase.from('programs').select('*').eq('status', 'active').then(({ data }) => { if (data) setPrograms(data); });
@@ -120,9 +128,17 @@ export default function ContactPage() {
       }
       const { error: insertError } = await supabase.from('contacts').insert([{
         name: formData.name, email: formData.email, whatsapp_number: fullWhatsapp,
-        program_id: parseInt(formData.program_id), message: formData.message, resume_url,
+        program_id: formData.program_id, message: formData.message, resume_url,
       }]);
-      if (insertError) throw insertError;
+      if (insertError) {
+        // Postgres unique violation = code 23505
+        if (insertError.code === '23505') {
+          setToast('You have already sent a query. Please wait 24 hours — our team will contact you shortly, or mail us at info@ezzcode.online');
+          setLoading(false);
+          return;
+        }
+        throw insertError;
+      }
       setSuccess(true);
       setFormData({ name: '', email: '', whatsapp: '', countryCode: '+92', program_id: '', message: '' });
       setFile(null);
@@ -134,6 +150,23 @@ export default function ContactPage() {
 
   return (
     <div>
+      {/* ── Duplicate Email Toast ── */}
+      {toast && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] w-[94%] max-w-lg animate-[slideDown_0.4s_cubic-bezier(0.16,1,0.3,1)] pointer-events-auto">
+          <div className="bg-amber-50 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-500/10 p-5 flex items-start gap-4 backdrop-blur-xl">
+            <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-amber-900 dark:text-amber-200 font-bold text-sm mb-1">Already Submitted</p>
+              <p className="text-amber-700 dark:text-amber-300/90 text-sm leading-relaxed">{toast}</p>
+            </div>
+            <button onClick={() => setToast(null)} className="p-1.5 hover:bg-amber-200/50 dark:hover:bg-amber-500/20 rounded-lg transition-colors flex-shrink-0">
+              <X className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+            </button>
+          </div>
+        </div>
+      )}
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-primary-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 py-20 md:py-28 overflow-hidden">
         <div className="absolute top-20 -left-32 w-96 h-96 bg-primary-200/20 dark:bg-primary-500/10 rounded-full blur-3xl pointer-events-none" />
